@@ -1,0 +1,16 @@
+package com.fatcat.coursetable.jw.service;
+
+/**
+ * Created by EsauL on 2016-10-01.
+ */
+
+public class BroadcastAction {
+
+    public static final String LOGIN_SUCCESS="com.jluzh.jw.loginsuccess";
+    public static final String LOGIN_FAIL="com.jluzh.jw.loginfail";
+    public static final String COURSE_TABLE="com.jluzh.jw.getcoursetable";
+    public static final String SCORE="com.jluzh.jw.getscore";
+    public static final String STU_INF ="com.jluzh.jw.stuinfo";
+    public static final String CHECK_IMG="com.jluzh.jw.checkimg";
+
+}
