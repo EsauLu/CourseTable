@@ -10,7 +10,7 @@
         <item name="android:windowBackground">@android:color/white</item>
 
         <!-- 窗口标题的背景颜色 -->
-        <item name="android:textColorPrimary">#000000</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
     </style>
 
 </resources>

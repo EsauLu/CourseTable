@@ -79,9 +79,9 @@ public class CourseLoginActivity extends BaseActivity {
 //                    String success = (String) msg.getData().get(Constant.LOGIN_SUCCESS);
                     btnCourseLogin.setEnabled(false);
                     btnCourseLogin.setText(doQurey);
-                    if(doQurey.equals("获取课表...")){
+                    if (doQurey.equals("获取课表...")) {
                         myBinder.qureyCourseTable(null, null);
-                    }else if(doQurey.equals("获取成绩...")){
+                    } else if (doQurey.equals("获取成绩...")) {
                         myBinder.qureyScore();
                     }
                     break;
@@ -97,7 +97,7 @@ public class CourseLoginActivity extends BaseActivity {
                     Bundle bl = msg.getData();
                     String error = bl.getString(Constant.LOGIN_FAIL);
                     myBinder.getCheckImg();//重新获取验证码
-                    Toast.makeText(CourseLoginActivity.this,error,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CourseLoginActivity.this, error, Toast.LENGTH_SHORT).show();
                     break;
                 }
                 case 0x126: {//获取课表
@@ -127,10 +127,10 @@ public class CourseLoginActivity extends BaseActivity {
         etCourseCheck = (EditText) findViewById(R.id.et_course_check);
         ivCheckCode = (ImageView) findViewById(R.id.iv_checkCode);
 //        isLogin();
-        Intent intent=getIntent();
-        doQurey=intent.getStringExtra("qurey");
-        if(doQurey==null){
-            doQurey="获取课表...";
+        Intent intent = getIntent();
+        doQurey = intent.getStringExtra("qurey");
+        if (doQurey == null) {
+            doQurey = "获取课表...";
         }
 
     }

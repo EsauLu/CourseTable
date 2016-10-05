@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.fatcat.coursetable.R;
 import com.fatcat.coursetable.base.BaseActivity;
@@ -17,14 +19,27 @@ public class CourseInfoActivity extends BaseActivity {
     private Toolbar mToolbar;
     Course course;
 
+    private TextView courseName;
+    private TextView courseRoom;
+    private TextView courseTeacher;
+    private TextView courseNum;
+    private TextView courseWeek;
+
     @Override
     public void initView() {
         setContentView(R.layout.activity_courseinfo);
 
         Intent intent = this.getIntent();
-        course=(Course)intent.getSerializableExtra("course");
+        course = (Course) intent.getSerializableExtra("course");
 
-        Log.i("传递的course对象",course.toString());
+        Log.i("传递的course对象", course.toString());
+
+        courseName = (TextView) findViewById(R.id.course_name);
+        courseRoom = (TextView) findViewById(R.id.course_room);
+        courseTeacher = (TextView) findViewById(R.id.course_teacher);
+        courseNum = (TextView) findViewById(R.id.course_num);
+        courseWeek = (TextView) findViewById(R.id.course_week);
+
     }
 
     @Override
@@ -32,6 +47,7 @@ public class CourseInfoActivity extends BaseActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         // toolbar.setLogo(R.drawable.ic_launcher);
         mToolbar.setTitle("课程信息");// 标题的文字需在setSupportActionBar之前，不然会无效
+        mToolbar.setTitleTextColor(R.color.colorText);
         // toolbar.setSubtitle("副标题");
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -40,10 +56,30 @@ public class CourseInfoActivity extends BaseActivity {
     @Override
     protected void initData() {
 
+
+        courseName.setText(course.getName());
+        courseRoom.setText(course.getClassRoom());
+        courseTeacher.setText(course.getTeacher());
+        courseNum.setText(course.getClassTime());
+        courseWeek.setText(course.getWeekNum());
+
     }
 
     @Override
     protected void initListener() {
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

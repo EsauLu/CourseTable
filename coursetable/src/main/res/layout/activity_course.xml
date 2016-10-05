@@ -5,14 +5,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/rl_chat_title"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:orientation="horizontal"
         android:layout_alignParentTop="true"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <!--  <ImageView
               android:id="@+id/iv_nav_back"
@@ -26,48 +25,46 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="0.2"
+            android:layout_weight="0.35"
             android:gravity="center_vertical">
+
             <TextView
                 android:id="@+id/tv_nav_title"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:textColor="#2e94da"
                 android:layout_marginLeft="15dp"
+                android:gravity="center_vertical"
                 android:text="课表"
-                android:textSize="18sp"
-                />
+                android:textColor="#2e94da"
+                android:textSize="18sp" />
         </LinearLayout>
 
         <Spinner
             android:id="@+id/week_day_spinner"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
+            android:layout_height="130dp"
+            android:gravity="center_horizontal"
+            android:layout_weight="0.15"
             android:background="@color/cardview_light_background"
-            android:layout_weight="0.6"
-            android:dropDownWidth="match_parent"
-            />
+            android:dropDownVerticalOffset="90dp"
+            android:dropDownWidth="150dp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="0.2"
-            android:gravity="right|center_vertical"
-            >
+            android:layout_weight="0.35"
+            android:gravity="right|center_vertical">
+
             <TextView
                 android:id="@+id/tv_setting_title"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:textColor="#2e94da"
                 android:layout_marginRight="15dp"
+                android:gravity="center_vertical"
                 android:text="+"
+                android:textColor="#2e94da"
                 android:textSize="32sp" />
         </LinearLayout>
-
 
 
         <!-- <ImageView
@@ -746,7 +743,6 @@
         </ScrollView>
 
     </RelativeLayout>
-
 
 
 </LinearLayout>
