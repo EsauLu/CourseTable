@@ -43,11 +43,6 @@ public class DataService extends Service implements OkHttpDAO{
     private OkHttpClient mOkHttpClient;
 
     /**
-     * 记录cookie
-     */
-//    private String mCookie;
-
-    /**
      * 记录正方教务系统页面表单的__VIEWSTATE的值
      */
     private String mViewState;
@@ -143,7 +138,7 @@ public class DataService extends Service implements OkHttpDAO{
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
+                connectionError();
             }
             @Override
             public void onResponse(Call call, Response response) throws IOException {
@@ -171,10 +166,12 @@ public class DataService extends Service implements OkHttpDAO{
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
+                Log.i("init","********************* getCheckImg onFailure *********************");
+                connectionError();
             }
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                Log.i("init","********************* getCheckImg onResponse *********************");
                 ResponseBody body=response.body();
                 byte[] data=body.bytes();
                 Intent it=new Intent(BroadcastAction.CHECK_IMG);
@@ -207,7 +204,7 @@ public class DataService extends Service implements OkHttpDAO{
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
+                connectionError();
             }
 
             @Override
@@ -259,6 +256,7 @@ public class DataService extends Service implements OkHttpDAO{
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                connectionError();
             }
 
             @Override
@@ -317,7 +315,7 @@ public class DataService extends Service implements OkHttpDAO{
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
+                connectionError();
             }
 
             @Override
@@ -355,6 +353,7 @@ public class DataService extends Service implements OkHttpDAO{
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                connectionError();
             }
 
             @Override
@@ -404,4 +403,14 @@ public class DataService extends Service implements OkHttpDAO{
         }
 
     }
+
+    private void connectionError(){
+        Intent it=new Intent();
+        String errorMessege="连接失败！";
+        it.setAction(BroadcastAction.LOGIN_FAIL);
+        it.putExtra(Constant.LOGIN_FAIL,errorMessege);
+        sendBroadcast(it);
+    }
+
+
 }

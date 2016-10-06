@@ -142,7 +142,7 @@ public class CourseLoginActivity extends BaseActivity {
     protected void initActionBar() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         // toolbar.setLogo(R.drawable.ic_launcher);
-        mToolbar.setTitle("课表登录");// 标题的文字需在setSupportActionBar之前，不然会无效
+        mToolbar.setTitle("登录");// 标题的文字需在setSupportActionBar之前，不然会无效
         // toolbar.setSubtitle("副标题");
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

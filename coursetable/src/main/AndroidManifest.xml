@@ -14,20 +14,22 @@
         <activity android:name=".activity.CourseActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".activity.CourseLoginActivity" />
         <activity android:name=".activity.CourseInfoActivity" />
-        <activity android:name=".activity.SettingActivity" />
 
         <service
             android:name=".jw.service.DataService"
             android:enabled="true"
-            android:exported="true">
+            android:exported="true"></service>
 
-        </service>
-
+        <activity
+            android:name=".activity.SettingActivity"
+            android:label="@string/title_activity_setting"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

@@ -77,7 +77,6 @@ public class CourseInfoActivity extends BaseActivity {
             case android.R.id.home:
                 finish();
                 break;
-
             default:
                 break;
         }

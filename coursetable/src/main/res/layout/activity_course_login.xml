@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="吉珠课表"
+            android:text="登陆教务系统"
             android:textColor="#333333"
             android:textSize="30sp" />
 
