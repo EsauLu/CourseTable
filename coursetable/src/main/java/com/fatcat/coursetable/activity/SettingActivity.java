@@ -89,7 +89,11 @@ public class SettingActivity extends PreferenceActivity {
         long currTime=new Date().getTime();
         long beginTime=PrefUtils.getBeginTime(this,"begintime",currTime);
         currWeekNum = DateUtils.countCurrWeek(beginTime,currTime);
-        currWeek.setSummary("现在是第"+currWeekNum+"周");
+        if(currWeekNum>25){
+            currWeek.setSummary("本学期已结束");
+        }else{
+            currWeek.setSummary("现在是第"+currWeekNum+"周");
+        }
     }
 
 }

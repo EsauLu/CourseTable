@@ -110,7 +110,9 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
                 }
                 case 0x201:{
                     updateCurrWeek();
-                    mWeekDaySpinner.setSelection(mCurrWeek-1,true);
+                    if(mCurrWeek<=25){
+                        mWeekDaySpinner.setSelection(mCurrWeek-1,true);
+                    }
                     rankCourse(mCurrWeek);
                     break;
                 }
@@ -238,7 +240,9 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
         mAdapter = new WeekDayAdapter(this, R.layout.week_day_item_layout, mWeekArr);
         mAdapter.setDropDownViewResource(R.layout.week_day_drop_item_layout);
         mWeekDaySpinner.setAdapter(mAdapter);
-        mWeekDaySpinner.setSelection(mCurrWeek-1,true);
+        if(mCurrWeek<=25){
+            mWeekDaySpinner.setSelection(mCurrWeek-1,true);
+        }
         mWeekDaySpinner.setOnItemSelectedListener(this);
 
         //读取已经保存的课表

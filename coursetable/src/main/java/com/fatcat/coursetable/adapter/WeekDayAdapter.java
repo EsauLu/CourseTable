@@ -40,7 +40,6 @@ public class WeekDayAdapter extends ArrayAdapter<String> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
         LinearLayout view;
 
         if(convertView == null){
@@ -52,6 +51,7 @@ public class WeekDayAdapter extends ArrayAdapter<String> {
             view = (LinearLayout)convertView;
         }
 
+        Log.i(">>>>>>>>>>>>>",">>>>>>>>>>>>>>>>>>>>>>>>>>越你麻痹界"+position);
         String item = getItem(position);
         long id=getItemId(position);
         TextView weekNum=(TextView) view.findViewById(R.id.tv_week_num);
