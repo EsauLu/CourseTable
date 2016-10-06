@@ -15,18 +15,26 @@ import android.widget.TextView;
 import com.fatcat.coursetable.R;
 import com.fatcat.coursetable.activity.CourseActivity;
 
+import java.util.List;
+
 /**
  * Created by EsauL on 2016-10-04.
  */
 
 public class WeekDayAdapter extends ArrayAdapter<String> {
 
-    private Context context;
+    private CourseActivity context;
     private int resource;
 
-    public WeekDayAdapter(Context context, int resource, String[] objects) {
+//    public WeekDayAdapter(Context context, int resource, String[] objects) {
+//        super(context, resource, objects);
+//        this.context = (CourseActivity) context;
+//        this.resource=resource;
+//    }
+
+    public WeekDayAdapter(Context context, int resource, List<String> objects) {
         super(context, resource, objects);
-        this.context = context;
+        this.context = (CourseActivity) context;
         this.resource=resource;
     }
 
@@ -45,18 +53,18 @@ public class WeekDayAdapter extends ArrayAdapter<String> {
         }
 
         String item = getItem(position);
+        long id=getItemId(position);
         TextView weekNum=(TextView) view.findViewById(R.id.tv_week_num);
         TextView xnd=(TextView) view.findViewById(R.id.tv_xnd);
 
-        if(item.contains("本周")){
-            item=item.substring(0,item.indexOf("(本周)"));
+        int currWeek=context.getCurrWeek();
+        String s=context.getCurrXnd()+"学年 第"+context.getCurrXqd()+"学期";
+        if(id+1==currWeek){
+            item+="(本周)";
         }else{
             item=item+"(非本周)";
         }
         weekNum.setText(item);
-
-        CourseActivity courseActivity=(CourseActivity)context;
-        String s=courseActivity.getCurrXnd()+"学年 第"+courseActivity.getCurrXqd()+"学期";
         xnd.setText(s);
 
         return view;
@@ -64,7 +72,6 @@ public class WeekDayAdapter extends ArrayAdapter<String> {
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
-
         LinearLayout view;
         if(convertView == null){
             view = new LinearLayout(getContext());
@@ -76,9 +83,12 @@ public class WeekDayAdapter extends ArrayAdapter<String> {
         }
 
         String item = getItem(position);
+        long id=getItemId(position);
         TextView weekNum=(TextView) view.findViewById(R.id.tv_week_item);
-        if(item.contains("本周")){
-            weekNum.setBackgroundColor(0xff2e94da);
+        int currWeek=context.getCurrWeek();
+        if(id+1==currWeek){
+            item+="(本周)";
+            weekNum.setBackgroundResource(R.drawable.bg1);
             weekNum.setTextColor(Color.WHITE);
         }else{
             weekNum.setBackgroundColor(Color.WHITE);

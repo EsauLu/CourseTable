@@ -30,8 +30,12 @@ import com.fatcat.coursetable.jw.constant.Constant;
 import com.fatcat.coursetable.jw.factor.BeanFactor;
 import com.fatcat.coursetable.jw.service.BroadcastAction;
 import com.fatcat.coursetable.jw.service.DataService;
+import com.fatcat.coursetable.uitls.DateUtils;
 import com.fatcat.coursetable.uitls.PrefUtils;
 import com.google.gson.Gson;
+
+import java.util.Calendar;
+import java.util.Date;
 
 
 /**
@@ -76,7 +80,6 @@ public class CourseLoginActivity extends BaseActivity {
             super.handleMessage(msg);
             switch (msg.what) {
                 case 0x123: {//登陆成功
-//                    String success = (String) msg.getData().get(Constant.LOGIN_SUCCESS);
                     btnCourseLogin.setEnabled(false);
                     btnCourseLogin.setText(doQurey);
                     if (doQurey.equals("获取课表...")) {
@@ -106,7 +109,8 @@ public class CourseLoginActivity extends BaseActivity {
 
                     //保存课表
                     PrefUtils.setCourseInfo(CourseLoginActivity.this, "courseinfo", gson.toJson(courseTable).toString());
-//                    PrefUtils.setCourseBoolean(CourseLoginActivity.this, "ishascourse", true);
+                    //将当前周作为课表开始时间保存
+                    PrefUtils.setBeginTime(CourseLoginActivity.this,"begintime", DateUtils.countBeginTime(Calendar.getInstance(),1));
 
                     Intent intent = new Intent(CourseLoginActivity.this, CourseActivity.class);
                     startActivity(intent);
@@ -126,7 +130,6 @@ public class CourseLoginActivity extends BaseActivity {
         btnCourseLogin = (Button) findViewById(R.id.btn_course_login);
         etCourseCheck = (EditText) findViewById(R.id.et_course_check);
         ivCheckCode = (ImageView) findViewById(R.id.iv_checkCode);
-//        isLogin();
         Intent intent = getIntent();
         doQurey = intent.getStringExtra("qurey");
         if (doQurey == null) {
@@ -181,16 +184,6 @@ public class CourseLoginActivity extends BaseActivity {
             }
         });
     }
-
-//    private void isLogin() {
-//        boolean isLogin = PrefUtils.getCourseBoolean(this, "ishascourse", false);
-//
-//        if (isLogin) {
-//            Intent intent = new Intent(CourseLoginActivity.this, CourseActivity.class);
-//            startActivity(intent);
-//            finish();
-//        }
-//    }
 
     private void login() {
 

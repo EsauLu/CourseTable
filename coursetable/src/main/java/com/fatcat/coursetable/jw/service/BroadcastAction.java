@@ -13,4 +13,5 @@ public class BroadcastAction {
     public static final String STU_INF ="com.jluzh.jw.stuinfo";
     public static final String CHECK_IMG="com.jluzh.jw.checkimg";
 
+    public static final String CHANG_CURR_WEEK_NUM="com.jluzh.jw.changeweeknum";
 }

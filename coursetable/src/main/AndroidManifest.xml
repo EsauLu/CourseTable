@@ -11,23 +11,23 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name=".activity.CourseActivity" >
+        <activity android:name=".activity.CourseActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".activity.CourseLoginActivity" />
         <activity android:name=".activity.CourseInfoActivity" />
+        <activity android:name=".activity.SettingActivity" />
 
         <service
-            android:name="com.fatcat.coursetable.jw.service.DataService"
+            android:name=".jw.service.DataService"
             android:enabled="true"
             android:exported="true">
 
         </service>
+
     </application>
 
 </manifest>

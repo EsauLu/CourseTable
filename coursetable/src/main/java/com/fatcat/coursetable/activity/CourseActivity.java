@@ -1,8 +1,11 @@
 package com.fatcat.coursetable.activity;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,23 +15,25 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.fatcat.coursetable.R;
 import com.fatcat.coursetable.adapter.WeekDayAdapter;
 import com.fatcat.coursetable.base.BaseActivity;
 import com.fatcat.coursetable.jw.bean.Course;
 import com.fatcat.coursetable.jw.bean.CourseTable;
+import com.fatcat.coursetable.jw.service.BroadcastAction;
+import com.fatcat.coursetable.uitls.DateUtils;
 import com.fatcat.coursetable.uitls.PrefUtils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
  * Created by FatCat on 2016/10/3.
  */
-public class CourseActivity extends BaseActivity {
+public class CourseActivity extends BaseActivity implements AdapterView.OnItemSelectedListener{
 
     /**
      * 课程表
@@ -40,12 +45,37 @@ public class CourseActivity extends BaseActivity {
      */
     private int mCurrWeek;
 
+    /**
+     * 选中的周数
+     */
     private int mSelectWeek;
 
+    /**
+     * 选择周数的下拉框
+     */
     private Spinner mWeekDaySpinner;
 
+    /**
+     * 下拉框的适配器
+     */
+    private  WeekDayAdapter mAdapter;
+
+    /**
+     * 周数下拉框的数据
+     */
+    private ArrayList<String> mWeekArr;
+
+    /**
+     * 记录课程的map
+     */
     private HashMap<String, Course> mCourseMap;
+
+    /**
+     * 记录课程背景颜色的map
+     */
     private HashMap<String, Integer> mBgColorMap;
+
+    private CourseBroadcast mCourseBroadcast;
 
     //课程页面的button引用，6行7列
     private int[][] lessons = {
@@ -70,13 +100,20 @@ public class CourseActivity extends BaseActivity {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
-                case 0x200:
+                case 0x200:{
                     int weekNum = msg.getData().getInt("message");
                     if (mSelectWeek != weekNum) {
                         mSelectWeek = weekNum;
                         rankCourse(weekNum);
                     }
                     break;
+                }
+                case 0x201:{
+                    updateCurrWeek();
+                    mWeekDaySpinner.setSelection(mCurrWeek-1,true);
+                    rankCourse(mCurrWeek);
+                    break;
+                }
             }
         }
     };
@@ -86,13 +123,23 @@ public class CourseActivity extends BaseActivity {
         setContentView(R.layout.activity_course);
         mWeekDaySpinner = (Spinner) findViewById(R.id.week_day_spinner);
 
+        mCourseBroadcast=new CourseBroadcast();
+        IntentFilter filter=new IntentFilter();
+        filter.addAction(BroadcastAction.CHANG_CURR_WEEK_NUM);
+        registerReceiver(mCourseBroadcast,filter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i("注销广播","====================注销广播mCourseBroadcast");
+        unregisterReceiver(mCourseBroadcast);
     }
 
     /**
      * 排列课程到课表
      */
     private void rankCourse(int weekNum) {
-//        Log.i("message","===============" + weekNum + "=====================");
         int currWeekState = (weekNum % 2 == 0) ? Course.DOUBLE_WEEK : Course.SINGLE_WEEK;
         //排列课程名称
         for (final String key : mCourseMap.keySet()) {
@@ -103,8 +150,6 @@ public class CourseActivity extends BaseActivity {
             Button btn = (Button) findViewById(lessons[x / 2][y]);
             String oldText = (String) btn.getText();
             String newText = key.split("\\*")[0];
-//            Log.i("===========", course.getName()+" , "+course.getClassRoom()+" , "+course.getStartWeek()+" , "+course.getEndWeek() + " , " + course.getWeekState()+" , "
-//                    +weekNum+" , "+(weekNum>=course.getStartWeek()&&weekNum<=course.getEndWeek()));
             if (oldText.equals(newText)) continue;
             if (courseState == Course.ALL_WEEK || courseState == currWeekState || oldText == null || oldText.equals("")) {
                 btn.setText(newText);
@@ -149,6 +194,11 @@ public class CourseActivity extends BaseActivity {
 
     }
 
+    private void updateCurrWeek(){
+        long currTime=new Date().getTime();
+        long beginTime=PrefUtils.getBeginTime(this,"begintime",currTime);
+        mSelectWeek = mCurrWeek = DateUtils.countCurrWeek(beginTime,currTime);
+    }
 
     @Override
     protected void initActionBar() {
@@ -159,37 +209,6 @@ public class CourseActivity extends BaseActivity {
     protected void initData() {
 
         String courseString = PrefUtils.getCourseInfo(CourseActivity.this, "courseinfo", "");
-
-        String[] weekArr = new String[25];
-        String s = "第1周";
-        mSelectWeek = mCurrWeek = 1;
-        for (int i = 0; i < 25; i++) {
-            weekArr[i] = s.replaceAll("[\\d]+", String.valueOf(i + 1));
-            if (i + 1 == mCurrWeek) {
-                weekArr[i] += "(本周)";
-            }
-        }
-
-        WeekDayAdapter adapter = new WeekDayAdapter(this, R.layout.week_day_item_layout, weekArr);
-        adapter.setDropDownViewResource(R.layout.week_day_drop_item_layout);
-        mWeekDaySpinner.setAdapter(adapter);
-        mWeekDaySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Message msg = new Message();
-                msg.what = 0x200;
-                Bundle bl = new Bundle();
-                bl.putInt("message", position + 1);
-                msg.setData(bl);
-                mHandler.sendMessage(msg);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
         if (courseString == null || courseString.equals("")) {
             AlertDialog.Builder ab = new AlertDialog.Builder(CourseActivity.this)
                     .setTitle("提示：")
@@ -205,25 +224,65 @@ public class CourseActivity extends BaseActivity {
                         }
                     });
             ab.create().show();
-        } else {
-            //读取已经保存的课表
-            Gson gson = new Gson();
-            mCourseTable = gson.fromJson(courseString, CourseTable.class);
-            mCourseMap = new HashMap<>();
-            mBgColorMap = new HashMap<>();
-            int i = 0;
-            for (Course c : mCourseTable.getCourses()) {
-                String key = c.getName() + "@" + c.getClassRoom() + "*" + c.getNumber() + (c.getDay() % 7);
-                mCourseMap.put(key, c);
-                mBgColorMap.put(c.getName(), bg[i++]);
-            }
-            rankCourse(mCurrWeek);
+            return;
         }
 
+        updateCurrWeek();//更新当前周
+        mWeekArr = new ArrayList<>();
+        String s = "第1周";
+        for (int i = 25; i >0; i--) {
+            String w = s.replaceAll("[\\d]+", String.valueOf(i));
+            mWeekArr.add(0,w);
+        }
+
+        mAdapter = new WeekDayAdapter(this, R.layout.week_day_item_layout, mWeekArr);
+        mAdapter.setDropDownViewResource(R.layout.week_day_drop_item_layout);
+        mWeekDaySpinner.setAdapter(mAdapter);
+        mWeekDaySpinner.setSelection(mCurrWeek-1,true);
+        mWeekDaySpinner.setOnItemSelectedListener(this);
+
+        //读取已经保存的课表
+        Gson gson = new Gson();
+        mCourseTable = gson.fromJson(courseString, CourseTable.class);
+        mCourseMap = new HashMap<>();
+        mBgColorMap = new HashMap<>();
+        int i = 0;
+        for (Course c : mCourseTable.getCourses()) {
+            String key = c.getName() + "@" + c.getClassRoom() + "*" + c.getNumber() + (c.getDay() % 7);
+            mCourseMap.put(key, c);
+            mBgColorMap.put(c.getName(), bg[i++]);
+        }
+        rankCourse(mCurrWeek);
+
+    }
+
+    public void onClick(View view){
+        switch (view.getId()){
+            case R.id.tv_setting_title:{
+                Intent intent=new Intent(this,SettingActivity.class);
+                startActivity(intent);
+                break;
+            }
+        }
     }
 
     @Override
     protected void initListener() {
+
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        Message msg = new Message();
+        msg.what = 0x200;
+        Bundle bl = new Bundle();
+        bl.putInt("message", position + 1);
+        msg.setData(bl);
+        mHandler.sendMessage(msg);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
 
     }
 
@@ -260,4 +319,55 @@ public class CourseActivity extends BaseActivity {
         return mCourseTable.getCurrXqd();
     }
 
+    class CourseBroadcast extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Message msg=new Message();
+            Log.i("收到广播","====================广播内容："+intent.getAction());
+            switch (intent.getAction()){
+                case BroadcastAction.CHANG_CURR_WEEK_NUM:{
+                    Log.i("收到广播","====================检查内容："+intent.getAction());
+                    msg.what=0x201;
+                    break;
+                }
+            }
+            mHandler.sendMessage(msg);
+        }
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

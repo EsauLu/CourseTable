@@ -2,6 +2,7 @@ package com.fatcat.coursetable.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -46,8 +47,8 @@ public class CourseInfoActivity extends BaseActivity {
     protected void initActionBar() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         // toolbar.setLogo(R.drawable.ic_launcher);
-        mToolbar.setTitle("课程信息");// 标题的文字需在setSupportActionBar之前，不然会无效
-        mToolbar.setTitleTextColor(R.color.colorText);
+        mToolbar.setTitle(course.getName());// 标题的文字需在setSupportActionBar之前，不然会无效
+        mToolbar.setTitleTextColor(ContextCompat.getColor(this,R.color.colorText));
         // toolbar.setSubtitle("副标题");
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
