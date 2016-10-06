@@ -119,6 +119,7 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
                 }
                 case 0x202:{
                     if(updateCourse()){
+                        mAdapter.notifyDataSetChanged();
                         rankCourse(mSelectWeek);
                     }
                     break;
@@ -249,7 +250,7 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
     @Override
     protected void initData() {
 
-        mCurrWeek=26;
+        mCurrWeek=0;
 
         if(!updateCourse()){
             AlertDialog.Builder ab = new AlertDialog.Builder(CourseActivity.this)

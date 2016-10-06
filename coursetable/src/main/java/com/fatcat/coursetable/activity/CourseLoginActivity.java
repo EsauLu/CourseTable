@@ -110,7 +110,7 @@ public class CourseLoginActivity extends BaseActivity {
                     //保存课表
                     PrefUtils.setCourseInfo(CourseLoginActivity.this, "courseinfo", gson.toJson(courseTable).toString());
                     //将当前周作为课表开始时间保存
-                    PrefUtils.setBeginTime(CourseLoginActivity.this,"begintime", DateUtils.countBeginTime(Calendar.getInstance(),28));
+                    PrefUtils.setBeginTime(CourseLoginActivity.this,"begintime", DateUtils.countBeginTime(Calendar.getInstance(),1));
 
                     Intent intent=new Intent(BroadcastAction.UPDTE_COURSE);
                     CourseLoginActivity.this.sendBroadcast(intent);

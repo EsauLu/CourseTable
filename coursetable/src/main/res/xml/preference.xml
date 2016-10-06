@@ -14,7 +14,7 @@
         <Preference
             android:key="my_course"
             android:title="我的课表"
-            android:summary="查看已添加的课表"
+            android:summary="添加或更改课表"
             android:layout="@layout/setting_item_layout"
             />
 
