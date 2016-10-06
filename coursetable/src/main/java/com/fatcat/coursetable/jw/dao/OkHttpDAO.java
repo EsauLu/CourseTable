@@ -59,10 +59,16 @@ public interface OkHttpDAO {
 
     /**
      * 获取个人信息
-     * @param url 查询个人信息的url
      * @return 个人信息
      */
     public void getPersonalInfo();
+
+    /**
+     * 设置教务网地址
+     *
+     * @param url 地址
+     */
+    public void setJwURL(String url);
 
 
 }

@@ -13,40 +13,39 @@ public class PrefUtils {
 
     public static final String PREF_NAME = "config";
 
-    public static void setCourseInfo(Context ctx, String key, String value) {
+    public static void setCourseInfo(Context ctx, String value) {
         SharedPreferences sp = ctx.getSharedPreferences(PREF_NAME,
                 Context.MODE_PRIVATE);
-        sp.edit().putString(key, value).commit();
+        sp.edit().putString("courseTable", value).commit();
     }
 
-    public static String  getCourseInfo(Context ctx, String key, String defaultValue) {
+    public static String  getCourseInfo(Context ctx, String defaultValue) {
         SharedPreferences sp = ctx.getSharedPreferences(PREF_NAME,
                 Context.MODE_PRIVATE);
-        return  sp.getString(key,defaultValue);
+        return  sp.getString("courseTable",defaultValue);
     }
 
-    public static  final void setBeginTime(Context ctx, String key, long value){
+    public static  final void setBeginTime(Context ctx, long value){
         SharedPreferences sp = ctx.getSharedPreferences(PREF_NAME,
                 Context.MODE_PRIVATE);
-        Log.i("发送广播","============保存开始时间============");
-        sp.edit().putLong(key, value).commit();
+        sp.edit().putLong("begintime", value).commit();
     }
 
-    public static final long getBeginTime(Context ctx, String key, long defaultValue){
+    public static final long getBeginTime(Context ctx, long defaultValue){
         SharedPreferences sp = ctx.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        return  sp.getLong(key,defaultValue);
+        return  sp.getLong("begintime",defaultValue);
     }
 
-//    public static boolean  getCourseBoolean(Context ctx, String key, boolean defaultValue) {
-//        SharedPreferences sp = ctx.getSharedPreferences(PREF_NAME,
-//                Context.MODE_PRIVATE);
-//        return  sp.getBoolean(key,defaultValue);
-//    }
-//
-//    public static void setCourseBoolean(Context ctx, String key, boolean value) {
-//        SharedPreferences sp = ctx.getSharedPreferences(PREF_NAME,
-//                Context.MODE_PRIVATE);
-//        sp.edit().putBoolean(key, value).commit();
-//    }
+
+    public static  final void setJwUrl(Context ctx, String value){
+        SharedPreferences sp = ctx.getSharedPreferences(PREF_NAME,
+                Context.MODE_PRIVATE);
+        sp.edit().putString("jwurl", value).commit();
+    }
+
+    public static final String getJwUrl(Context ctx, String defaultValue){
+        SharedPreferences sp = ctx.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return  sp.getString("jwurl",defaultValue);
+    }
 
 }

@@ -38,11 +38,6 @@ import okhttp3.ResponseBody;
 public class DataService extends Service implements OkHttpDAO{
 
     /**
-     * Http客户端
-     */
-    private OkHttpClient mOkHttpClient;
-
-    /**
      * 记录正方教务系统页面表单的__VIEWSTATE的值
      */
     private String mViewState;
@@ -72,8 +67,41 @@ public class DataService extends Service implements OkHttpDAO{
      */
     private String mScorceURL;
 
+    /**
+     * 教务网地址
+     */
+    private String mBaseURL;
+
+    /**
+     * Http客户端
+     */
+    private OkHttpClient mOkHttpClient=new OkHttpClient.Builder().cookieJar(new CookieJar() {
+        private final HashMap<String, List<Cookie>> cookieStore = new HashMap<String, List<Cookie>>();
+
+        @Override
+        public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+            String u=url.host();
+            String urlStr=url.url().toString();
+            if(urlStr.equals(mBaseURL)){
+                cookieStore.put(u, cookies);
+            }
+        }
+
+        @Override
+        public List<Cookie> loadForRequest(HttpUrl url) {
+            List<Cookie> cookies = cookieStore.get(url.host());
+            return cookies != null ? cookies : new ArrayList<Cookie>();
+        }
+    }).build();
+
+    /**
+     * Binder实例
+     */
     private  DataBinder myBinder=new DataBinder();
 
+    /**
+     * 自定义binder类
+     */
     public class DataBinder extends Binder{
 
         public void login(User user){
@@ -96,44 +124,35 @@ public class DataService extends Service implements OkHttpDAO{
             DataService.this.getPersonalInfo();
         }
 
+        public void setURL(String url){
+            setJwURL(url);
+        }
+
+
     }
 
     public DataService() {
-        this.mViewState="";
-        mOkHttpClient=new OkHttpClient.Builder().cookieJar(new CookieJar() {
-            private final HashMap<String, List<Cookie>> cookieStore = new HashMap<String, List<Cookie>>();
-
-            @Override
-            public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
-                String u=url.host();
-                String urlStr=url.url().toString();
-                if(urlStr.equals(Constant.BASE_URL)){
-                    cookieStore.put(u, cookies);
-                }
-            }
-
-
-            @Override
-            public List<Cookie> loadForRequest(HttpUrl url) {
-                List<Cookie> cookies = cookieStore.get(url.host());
-                return cookies != null ? cookies : new ArrayList<Cookie>();
-            }
-        }).build();
-
-        init();
     }
 
     @Override
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
+        this.mViewState="";
+        this.mBaseURL=intent.getStringExtra(Constant.JW_URL);
+        if(mBaseURL==null){
+            Log.i("教务网地址为空","===============设置为默认的教务地址"+mBaseURL);
+            mBaseURL=Constant.BASE_URL;
+        }else{
+            Log.i("教务网地址不为空","==============="+mBaseURL);
+        }
+        init();
         return myBinder;
     }
 
     @Override
     public void init() {
         Log.i("init","********************* init *********************");
-        String url= Constant.BASE_URL;
-        Request request = new Request.Builder().url(url).build();
+        Request request = new Request.Builder().url(mBaseURL).build();
         Call call=mOkHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
@@ -161,7 +180,7 @@ public class DataService extends Service implements OkHttpDAO{
     @Override
     public void getCheckImg() {
         Log.i("init","********************* getCheckImg *********************");
-        Request request = new Request.Builder().url(Constant.CHECK_IMAGE_URL).build();
+        Request request = new Request.Builder().url(mBaseURL+Constant.CHECK_IMAGE_URL).build();
         Call call=mOkHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
@@ -196,7 +215,7 @@ public class DataService extends Service implements OkHttpDAO{
                 .add("hidsc","")
                 .build();
         Request request=new Request.Builder()
-                .url(Constant.LOGIN_URL)
+                .url(mBaseURL+Constant.LOGIN_URL)
                 .post(body)
                 .build();
         mUser=user;//记录登陆的用户
@@ -237,8 +256,8 @@ public class DataService extends Service implements OkHttpDAO{
     @Override
     public void getCourseTable(final String xnd,final String xqd) {
         Log.i("getCourseTable","********************* getCourseTable *********************");
-        String urlStr=Constant.BASE_URL+mCourseURL;//查询课表的URL
-        String referer=Constant.STUDENT_URL+mUser.getName();//引用地址
+        String urlStr=mBaseURL+mCourseURL;//查询课表的URL
+        String referer=mBaseURL+Constant.STUDENT_URL +mUser.getName();//引用地址
         Log.i("getCourseTable","*********   "+urlStr+"   *********");
         Request.Builder builder=new Request.Builder().url(urlStr).addHeader("Referer",referer);
         if(xnd!=null&&xqd!=null){
@@ -299,7 +318,7 @@ public class DataService extends Service implements OkHttpDAO{
     public void getPersonalInfo() {
 
         Log.i("getPersonalInfo","********************* getPersonalInfo *********************");
-        String urlStr=Constant.BASE_URL+mPersonalInfoURL;//查询课表的URL
+        String urlStr=mBaseURL+mPersonalInfoURL;//查询课表的URL
         Log.i("getPersonalInfo","*********************"+urlStr+"*********************");
 
     }
@@ -308,8 +327,8 @@ public class DataService extends Service implements OkHttpDAO{
     public void getScore() {
 
         Log.i("getScore","********************* getScore *********************");
-        String urlStr=Constant.BASE_URL+mScorceURL;//查询课表的URL
-        String referer=Constant.STUDENT_URL+mUser.getName();//引用地址
+        String urlStr=mBaseURL+mScorceURL;//查询课表的URL
+        String referer=mBaseURL+Constant.STUDENT_URL +mUser.getName();//引用地址
         Request request = new Request.Builder().url(urlStr).addHeader("Referer",referer).build();
         Call call=mOkHttpClient.newCall(request);
         call.enqueue(new Callback() {
@@ -327,9 +346,16 @@ public class DataService extends Service implements OkHttpDAO{
         });
     }
 
+    @Override
+    public void setJwURL(String url) {
+        this.mBaseURL=url;
+        Log.i("设置新的教务网地址","==============="+mBaseURL);
+        init();
+    }
+
     public void score() {
 
-        String urlStr=Constant.BASE_URL+mScorceURL;//查询课表的URL
+        String urlStr=mBaseURL+mScorceURL;//查询课表的URL
         String ref=urlStr.substring(0,urlStr.indexOf("&xm=")+4);
         try{
             int index=urlStr.indexOf("&gnmkdm=");
@@ -412,5 +438,41 @@ public class DataService extends Service implements OkHttpDAO{
         sendBroadcast(it);
     }
 
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

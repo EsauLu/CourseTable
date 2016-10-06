@@ -208,7 +208,7 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
      */
     private void updateCurrWeek(){
         long currTime=new Date().getTime();
-        long beginTime=PrefUtils.getBeginTime(this,"begintime",currTime);
+        long beginTime=PrefUtils.getBeginTime(this,currTime);
         mCurrWeek = DateUtils.countCurrWeek(beginTime,currTime);
         if(mCurrWeek>25){
             mSelectWeek=1;
@@ -222,7 +222,7 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
      */
     private boolean updateCourse(){
         updateCurrWeek();
-        String courseString = PrefUtils.getCourseInfo(CourseActivity.this, "courseinfo", "");
+        String courseString = PrefUtils.getCourseInfo(CourseActivity.this, "");
         if (courseString == null || courseString.equals("")) {
             return false;
         }

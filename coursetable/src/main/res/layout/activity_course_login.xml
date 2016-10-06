@@ -96,6 +96,7 @@
                 android:clickable="true"
                 android:layout_gravity="center_vertical"
                 android:layout_height="40dp"
+                android:onClick="loginClick"
                 android:layout_weight="0.5" />
         </LinearLayout>
 
@@ -104,9 +105,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:onClick="loginClick"
             android:text="登录"
             android:textColor="@color/colorText" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="30dp">
+
+        <TextView
+            android:id="@+id/tv_jw_url"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="loginClick"
+            android:text="教务网地址：http://jw.jluzh.com"
+            android:textSize="16sp"
+            android:padding="10dp"/>
 
     </LinearLayout>
+
 </LinearLayout>

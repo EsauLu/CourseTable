@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fatcat.coursetable.R;
 import com.fatcat.coursetable.base.BaseActivity;
@@ -62,7 +63,7 @@ public class SettingActivity extends BaseActivity {
 
     public void updateCurrWeek(){
         long currTime=new Date().getTime();
-        long beginTime= PrefUtils.getBeginTime(this,"begintime",currTime);
+        long beginTime= PrefUtils.getBeginTime(this,currTime);
         mCurrWeekNum = DateUtils.countCurrWeek(beginTime,currTime);
         String s="";
         if(mCurrWeekNum==0){
@@ -87,6 +88,7 @@ public class SettingActivity extends BaseActivity {
                 break;
             }
             case R.id.setting_qurey_score:{
+                Toast.makeText(this,"敬请期待",Toast.LENGTH_LONG).show();
                 break;
             }
             case R.id.setting_statement:{
@@ -122,7 +124,7 @@ public class SettingActivity extends BaseActivity {
                 if(which+1==mCurrWeekNum){
                     return;
                 }
-                PrefUtils.setBeginTime(SettingActivity.this,"begintime", DateUtils.countBeginTime(Calendar.getInstance(),which+1));
+                PrefUtils.setBeginTime(SettingActivity.this, DateUtils.countBeginTime(Calendar.getInstance(),which+1));
                 updateCurrWeek();
                 Intent intent=new Intent();
                 intent.setAction(BroadcastAction.UPDATE_CURR_WEEK_NUM);
