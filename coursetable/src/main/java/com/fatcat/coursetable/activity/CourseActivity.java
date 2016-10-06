@@ -102,7 +102,7 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
             switch (msg.what) {
                 case 0x200:{
                     int weekNum = msg.getData().getInt("message");
-                    if (mSelectWeek != weekNum) {
+                    if (mSelectWeek != weekNum&&mCourseTable!=null) {
                         mSelectWeek = weekNum;
                         rankCourse(weekNum);
                     }
@@ -113,7 +113,14 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
                     if(mCurrWeek<=25){
                         mWeekDaySpinner.setSelection(mCurrWeek-1,true);
                     }
+                    mAdapter.notifyDataSetChanged();
                     rankCourse(mCurrWeek);
+                    break;
+                }
+                case 0x202:{
+                    if(updateCourse()){
+                        rankCourse(mSelectWeek);
+                    }
                     break;
                 }
             }
@@ -127,14 +134,14 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
 
         mCourseBroadcast=new CourseBroadcast();
         IntentFilter filter=new IntentFilter();
-        filter.addAction(BroadcastAction.CHANG_CURR_WEEK_NUM);
+        filter.addAction(BroadcastAction.UPDATE_CURR_WEEK_NUM);
+        filter.addAction(BroadcastAction.UPDTE_COURSE);
         registerReceiver(mCourseBroadcast,filter);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.i("注销广播","====================注销广播mCourseBroadcast");
         unregisterReceiver(mCourseBroadcast);
     }
 
@@ -196,10 +203,42 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
 
     }
 
+    /**
+     * 更新周数
+     */
     private void updateCurrWeek(){
         long currTime=new Date().getTime();
         long beginTime=PrefUtils.getBeginTime(this,"begintime",currTime);
-        mSelectWeek = mCurrWeek = DateUtils.countCurrWeek(beginTime,currTime);
+        mCurrWeek = DateUtils.countCurrWeek(beginTime,currTime);
+        if(mCurrWeek>25){
+            mSelectWeek=1;
+        }else{
+            mSelectWeek =mCurrWeek;
+        }
+    }
+
+    /**
+     * 更新课表
+     */
+    private boolean updateCourse(){
+        updateCurrWeek();
+        String courseString = PrefUtils.getCourseInfo(CourseActivity.this, "courseinfo", "");
+        if (courseString == null || courseString.equals("")) {
+            return false;
+        }
+        updateCurrWeek();//更新当前周
+        //读取已经保存的课表
+        Gson gson = new Gson();
+        mCourseTable = gson.fromJson(courseString, CourseTable.class);
+        mCourseMap = new HashMap<>();
+        mBgColorMap = new HashMap<>();
+        int k = 0;
+        for (Course c : mCourseTable.getCourses()) {
+            String key = c.getName() + "@" + c.getClassRoom() + "*" + c.getNumber() + (c.getDay() % 7);
+            mCourseMap.put(key, c);
+            mBgColorMap.put(c.getName(), bg[k++]);
+        }
+        return true;
     }
 
     @Override
@@ -210,8 +249,9 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
     @Override
     protected void initData() {
 
-        String courseString = PrefUtils.getCourseInfo(CourseActivity.this, "courseinfo", "");
-        if (courseString == null || courseString.equals("")) {
+        mCurrWeek=26;
+
+        if(!updateCourse()){
             AlertDialog.Builder ab = new AlertDialog.Builder(CourseActivity.this)
                     .setTitle("提示：")
                     .setMessage("你还未添加课程表，现在添加？")
@@ -222,14 +262,13 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
                             Intent intent = new Intent(CourseActivity.this, CourseLoginActivity.class);
                             intent.putExtra("query", "获取课表...");
                             startActivity(intent);
-                            CourseActivity.this.finish();
                         }
                     });
             ab.create().show();
-            return;
+        }else{
+            rankCourse(mSelectWeek);
         }
 
-        updateCurrWeek();//更新当前周
         mWeekArr = new ArrayList<>();
         String s = "第1周";
         for (int i = 25; i >0; i--) {
@@ -244,19 +283,6 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
             mWeekDaySpinner.setSelection(mCurrWeek-1,true);
         }
         mWeekDaySpinner.setOnItemSelectedListener(this);
-
-        //读取已经保存的课表
-        Gson gson = new Gson();
-        mCourseTable = gson.fromJson(courseString, CourseTable.class);
-        mCourseMap = new HashMap<>();
-        mBgColorMap = new HashMap<>();
-        int i = 0;
-        for (Course c : mCourseTable.getCourses()) {
-            String key = c.getName() + "@" + c.getClassRoom() + "*" + c.getNumber() + (c.getDay() % 7);
-            mCourseMap.put(key, c);
-            mBgColorMap.put(c.getName(), bg[i++]);
-        }
-        rankCourse(mCurrWeek);
 
     }
 
@@ -327,11 +353,13 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
         @Override
         public void onReceive(Context context, Intent intent) {
             Message msg=new Message();
-            Log.i("收到广播","====================广播内容："+intent.getAction());
             switch (intent.getAction()){
-                case BroadcastAction.CHANG_CURR_WEEK_NUM:{
-                    Log.i("收到广播","====================检查内容："+intent.getAction());
+                case BroadcastAction.UPDATE_CURR_WEEK_NUM:{
                     msg.what=0x201;
+                    break;
+                }
+                case BroadcastAction.UPDTE_COURSE:{
+                    msg.what=0x202;
                     break;
                 }
             }

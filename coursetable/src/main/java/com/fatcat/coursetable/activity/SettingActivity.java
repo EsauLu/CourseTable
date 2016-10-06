@@ -44,12 +44,19 @@ public class SettingActivity extends PreferenceActivity {
         myCourse.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                return false;
+                Intent intent = new Intent(SettingActivity.this, CourseLoginActivity.class);
+                intent.putExtra("query", "获取课表...");
+                startActivity(intent);
+                SettingActivity.this.finish();
+                return true;
             }
         });
         currWeek.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
+                if(currWeekNum==0){
+                    return false;
+                }
                 String[] num=new String[25];
                 for(int i=0;i<25;i++){
                     num[i]="第"+String.valueOf(i+1)+"周";
@@ -65,7 +72,7 @@ public class SettingActivity extends PreferenceActivity {
                         PrefUtils.setBeginTime(SettingActivity.this,"begintime", DateUtils.countBeginTime(Calendar.getInstance(),which+1));
                         updateCurrWeek();
                         Intent intent=new Intent();
-                        intent.setAction(BroadcastAction.CHANG_CURR_WEEK_NUM);
+                        intent.setAction(BroadcastAction.UPDATE_CURR_WEEK_NUM);
                         SettingActivity.this.sendBroadcast(intent);
                     }
                 });
@@ -89,7 +96,9 @@ public class SettingActivity extends PreferenceActivity {
         long currTime=new Date().getTime();
         long beginTime=PrefUtils.getBeginTime(this,"begintime",currTime);
         currWeekNum = DateUtils.countCurrWeek(beginTime,currTime);
-        if(currWeekNum>25){
+        if(currWeekNum==0){
+            currWeek.setSummary("你还没添加过任何课表");
+        }else if(currWeekNum>25){
             currWeek.setSummary("本学期已结束");
         }else{
             currWeek.setSummary("现在是第"+currWeekNum+"周");
