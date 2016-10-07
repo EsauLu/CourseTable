@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.fatcat.coursetable.R;
 import com.fatcat.coursetable.base.BaseActivity;
 import com.fatcat.coursetable.jw.bean.CourseTable;
+import com.fatcat.coursetable.jw.bean.ScoreTable;
 import com.fatcat.coursetable.jw.bean.User;
 import com.fatcat.coursetable.jw.constant.Constant;
 import com.fatcat.coursetable.jw.factor.BeanFactor;
@@ -121,6 +122,16 @@ public class CourseLoginActivity extends BaseActivity {
                     CourseLoginActivity.this.finish();
                     break;
                 }
+                case 0x127: {//获取课表
+                    Bundle bl = msg.getData();
+                    Intent intent=new Intent(CourseLoginActivity.this,ScoreAtivity.class);
+                    if(bl!=null){
+                        intent.putExtras(bl);
+                    }
+                    startActivity(intent);
+                    CourseLoginActivity.this.finish();
+                    break;
+                }
             }
         }
     };
@@ -134,6 +145,7 @@ public class CourseLoginActivity extends BaseActivity {
         etCourseCheck = (EditText) findViewById(R.id.et_course_check);
         ivCheckCode = (ImageView) findViewById(R.id.iv_checkCode);
         mJwUrlView=(TextView) findViewById(R.id.tv_jw_url);
+
         Intent intent = getIntent();
         doQurey = intent.getStringExtra("qurey");
         if (doQurey == null) {
@@ -172,6 +184,7 @@ public class CourseLoginActivity extends BaseActivity {
         intentFilter.addAction(BroadcastAction.LOGIN_FAIL);
         intentFilter.addAction(BroadcastAction.CHECK_IMG);
         intentFilter.addAction(BroadcastAction.COURSE_TABLE);
+        intentFilter.addAction(BroadcastAction.SCORE);
         registerReceiver(mReceiver, intentFilter);
 
         Intent it = new Intent(this, DataService.class);
@@ -297,6 +310,10 @@ public class CourseLoginActivity extends BaseActivity {
                 }
                 case BroadcastAction.COURSE_TABLE: {
                     msg.what = 0x126;
+                    break;
+                }
+                case BroadcastAction.SCORE:{
+                    msg.what = 0x127;
                     break;
                 }
             }

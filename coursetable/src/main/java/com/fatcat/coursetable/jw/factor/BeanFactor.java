@@ -116,9 +116,9 @@ public class BeanFactor {
 		cs.setXnd(info.get("xnd"));
 		cs.setXqd(info.get("xqd"));
 		cs.setName(info.get("name"));
-		cs.setCredit("credit");
-		cs.setScore("score");
-		cs.setProperty("property");
+		cs.setCredit(info.get("credit"));
+		cs.setScore(info.get("score"));
+		cs.setProperty(info.get("property"));
 
 		return cs;
 	}

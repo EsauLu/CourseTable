@@ -90,7 +90,7 @@ public class SettingActivity extends BaseActivity {
                 break;
             }
             case R.id.setting_qurey_score: {
-                Toast.makeText(this, "敬请期待", Toast.LENGTH_LONG).show();
+                qureyScore();
                 break;
             }
             case R.id.setting_statement: {
@@ -112,7 +112,14 @@ public class SettingActivity extends BaseActivity {
 
     private void clickMyCourse() {
         Intent intent = new Intent(SettingActivity.this, CourseLoginActivity.class);
-        intent.putExtra("query", "获取课表...");
+        intent.putExtra("qurey", "获取课表...");
+        startActivity(intent);
+        SettingActivity.this.finish();
+    }
+
+    public void qureyScore(){
+        Intent intent = new Intent(SettingActivity.this, CourseLoginActivity.class);
+        intent.putExtra("qurey", "获取成绩...");
         startActivity(intent);
         SettingActivity.this.finish();
     }

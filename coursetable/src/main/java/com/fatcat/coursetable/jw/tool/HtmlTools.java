@@ -267,15 +267,15 @@ public class HtmlTools {
 						break;
 					}
 					case 5:{
-						map.put("credit",res);
+						map.put("property",res);
 						break;
 					}
 					case 7:{
-						map.put("score",res);
+						map.put("credit",res);
 						break;
 					}
 					case 9:{
-						map.put("property",res);
+						map.put("score",res);
 						break;
 					}
 					default:{

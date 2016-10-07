@@ -21,16 +21,21 @@
         <activity android:name=".activity.CourseLoginActivity" />
         <activity android:name=".activity.CourseInfoActivity" />
         <activity android:name=".activity.StatementActivity" />
+        <activity android:name=".activity.ScoreAtivity" />
 
         <service
             android:name=".jw.service.DataService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true">
+
+        </service>
 
         <activity
             android:name=".activity.SettingActivity"
             android:label="@string/title_activity_setting"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme">
+
+        </activity>
     </application>
 
 </manifest>
