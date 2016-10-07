@@ -48,7 +48,7 @@ public class CourseInfoActivity extends BaseActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         // toolbar.setLogo(R.drawable.ic_launcher);
         mToolbar.setTitle(course.getName());// 标题的文字需在setSupportActionBar之前，不然会无效
-        mToolbar.setTitleTextColor(ContextCompat.getColor(this,R.color.colorText));
+        mToolbar.setTitleTextColor(ContextCompat.getColor(this,R.color.colorBlue));
         // toolbar.setSubtitle("副标题");
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

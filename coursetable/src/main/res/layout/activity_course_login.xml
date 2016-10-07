@@ -3,13 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@mipmap/bg"
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="@color/colorBackground"
         android:minHeight="?attr/actionBarSize"
         app:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
@@ -122,8 +123,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="loginClick"
-            android:text="教务网地址：http://jw.jluzh.com"
+            android:text="当前教务网地址：http://jw.jluzh.com"
             android:textSize="16sp"
+            android:textColor="#333333"
             android:padding="10dp"/>
 
     </LinearLayout>
