@@ -216,6 +216,11 @@ public class HtmlTools {
 		return courses;
 	}
 
+	/**
+	 * 在html文档中获取成绩表
+	 * @param html HTML文档
+	 * @return 成绩表对象
+     */
 	public static ScoreTable getScoreTable(String html){
 		String res="";
 		String pattern="<table class=\"datelist\" cellspacing=\"0\" cellpadding=\"3\" border=\"0\" id=\"Datagrid1\" width=\"100%\">([\\s\\S]+?)</table>";
@@ -231,6 +236,11 @@ public class HtmlTools {
 		return scoreTable;
 	}
 
+	/**
+	 * 获取成绩的列表
+	 * @param html HTML文档
+	 * @return 成绩的列表对象
+     */
 	private static ArrayList<CourseScore> findScore(String html){
 
 		ArrayList<CourseScore> list=new ArrayList<>();
@@ -284,8 +294,7 @@ public class HtmlTools {
 				}
 			}
 			CourseScore cs=BeanFactor.createCourseScore(map);
-			list.add(cs);
-
+			list.add(0,cs);
 		}
 		return  list;
 	}
