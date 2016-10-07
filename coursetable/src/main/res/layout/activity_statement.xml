@@ -20,8 +20,6 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:background="?android:attr/selectableItemBackground"
-        android:clickable="true"
-        android:onClick="settingOnClick"
         android:orientation="vertical"
         android:padding="10dp">
 
@@ -47,8 +45,6 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:background="?android:attr/selectableItemBackground"
-        android:clickable="true"
-        android:onClick="settingOnClick"
         android:orientation="vertical"
         android:padding="10dp">
 
