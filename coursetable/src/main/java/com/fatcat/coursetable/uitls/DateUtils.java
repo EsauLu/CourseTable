@@ -5,6 +5,8 @@ import android.util.Log;
 import java.util.Calendar;
 
 /**
+ * 处理课表时间截的类
+ *
  * Created by EsauL on 2016-10-06.
  */
 
@@ -14,9 +16,9 @@ public class DateUtils {
 
     /**
      * 根据当前周计算课表开始的时间截
-     * @param calendar
-     * @param currWeek
-     * @return
+     * @param calendar 当前日期
+     * @param currWeek 当前周
+     * @return 返回课表开始的时间截
      */
     public static final long countBeginTime(Calendar calendar,int currWeek){
 
