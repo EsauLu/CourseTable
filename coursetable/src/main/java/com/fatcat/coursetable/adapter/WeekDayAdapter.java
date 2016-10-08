@@ -18,19 +18,14 @@ import com.fatcat.coursetable.activity.CourseActivity;
 import java.util.List;
 
 /**
- * Created by EsauL on 2016-10-04.
+ * 周数下拉框适配器
+ * Created by EsauLu on 2016-10-04.
  */
 
 public class WeekDayAdapter extends ArrayAdapter<String> {
 
     private CourseActivity context;
     private int resource;
-
-//    public WeekDayAdapter(Context context, int resource, String[] objects) {
-//        super(context, resource, objects);
-//        this.context = (CourseActivity) context;
-//        this.resource=resource;
-//    }
 
     public WeekDayAdapter(Context context, int resource, List<String> objects) {
         super(context, resource, objects);

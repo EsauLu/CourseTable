@@ -1,10 +1,8 @@
 package com.fatcat.coursetable.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -13,12 +11,13 @@ import com.fatcat.coursetable.base.BaseActivity;
 import com.fatcat.coursetable.jw.bean.Course;
 
 /**
+ * 显示课程信息
  * Created by FatCat on 2016/10/3.
  */
 public class CourseInfoActivity extends BaseActivity {
 
     private Toolbar mToolbar;
-    Course course;
+    private Course course;
 
     private TextView courseName;
     private TextView courseRoom;
@@ -32,8 +31,6 @@ public class CourseInfoActivity extends BaseActivity {
 
         Intent intent = this.getIntent();
         course = (Course) intent.getSerializableExtra("course");
-
-        Log.i("传递的course对象", course.toString());
 
         courseName = (TextView) findViewById(R.id.course_name);
         courseRoom = (TextView) findViewById(R.id.course_room);

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 
 import com.fatcat.coursetable.jw.bean.Course;
 import com.fatcat.coursetable.jw.bean.CourseTable;
@@ -138,12 +137,9 @@ public class DataService extends Service implements OkHttpDAO{
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
         this.mViewState="";
-        this.mBaseURL=intent.getStringExtra(Constant.JW_URL);
+        this.mBaseURL=intent.getStringExtra(Constant.JW_URL);//读取教务网地址
         if(mBaseURL==null){
-            Log.i("教务网地址为空","===============设置为默认的教务地址"+mBaseURL);
             mBaseURL=Constant.BASE_URL;
-        }else{
-            Log.i("教务网地址不为空","==============="+mBaseURL);
         }
         init();
         return myBinder;
@@ -151,7 +147,7 @@ public class DataService extends Service implements OkHttpDAO{
 
     @Override
     public void init() {
-        Log.i("init","********************* init *********************");
+        //初始化
         Request request = new Request.Builder().url(mBaseURL).build();
         Call call=mOkHttpClient.newCall(request);
         call.enqueue(new Callback() {
@@ -161,7 +157,7 @@ public class DataService extends Service implements OkHttpDAO{
             }
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                mViewState=HtmlTools.findViewState(response.body().string());
+                mViewState=HtmlTools.findViewState(response.body().string());//获取隐藏域
                 getCheckImg();
             }
         });
@@ -179,20 +175,18 @@ public class DataService extends Service implements OkHttpDAO{
 
     @Override
     public void getCheckImg() {
-        Log.i("init","********************* getCheckImg *********************");
         Request request = new Request.Builder().url(mBaseURL+Constant.CHECK_IMAGE_URL).build();
         Call call=mOkHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.i("init","********************* getCheckImg onFailure *********************");
                 connectionError();
             }
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Log.i("init","********************* getCheckImg onResponse *********************");
                 ResponseBody body=response.body();
                 byte[] data=body.bytes();
+                //取得验证码数据并发送广播，将在登陆界面接收广播
                 Intent it=new Intent(BroadcastAction.CHECK_IMG);
                 it.putExtra(Constant.CHECK,data);
                 sendBroadcast(it);
@@ -202,7 +196,8 @@ public class DataService extends Service implements OkHttpDAO{
 
     @Override
     public void login(User user) {
-        Log.i("login","********************* login *********************");
+
+        //表单信息
         FormBody body=new FormBody.Builder()
                 .add("__VIEWSTATE", mViewState)
                 .add("txtUserName", user.getName())
@@ -214,6 +209,7 @@ public class DataService extends Service implements OkHttpDAO{
                 .add("hidPdrs","")
                 .add("hidsc","")
                 .build();
+
         Request request=new Request.Builder()
                 .url(mBaseURL+Constant.LOGIN_URL)
                 .post(body)
@@ -228,10 +224,10 @@ public class DataService extends Service implements OkHttpDAO{
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                //检测是否有登陆错误的信息，有则记录信息，否则登陆成功
                 ResponseBody body=response.body();
                 String html=body.string();
                 String  errorMessege="";
+                //检测是否有登陆错误的信息，有则记录信息，否则登陆成功
                 String p="<script language='javascript' defer>alert\\('([\\s\\S]+?)'\\);document\\.getElementById\\('([\\s\\S]+?)'\\)\\.focus\\(\\);</script>";
                 Pattern pattern=Pattern.compile(p);
                 Matcher m=pattern.matcher(html);
@@ -255,11 +251,10 @@ public class DataService extends Service implements OkHttpDAO{
 
     @Override
     public void getCourseTable(final String xnd,final String xqd) {
-        Log.i("getCourseTable","********************* getCourseTable *********************");
         String urlStr=mBaseURL+mCourseURL;//查询课表的URL
         String referer=mBaseURL+Constant.STUDENT_URL +mUser.getName();//引用地址
-        Log.i("getCourseTable","*********   "+urlStr+"   *********");
         Request.Builder builder=new Request.Builder().url(urlStr).addHeader("Referer",referer);
+        //根据传入参数获取对应学年学期的课表，参数为空则获取默认课表
         if(xnd!=null&&xqd!=null){
             FormBody body=new FormBody.Builder()
                     .add("__EVENTTARGET", "xqd")
@@ -304,6 +299,7 @@ public class DataService extends Service implements OkHttpDAO{
                 courseTable.setCourses(courses);
                 courseTable.setSimpleInfo(stuInfo);
 
+                //通过广播将课表发送到主界面
                 Intent it=new Intent(BroadcastAction.COURSE_TABLE);
                 Bundle bl=new Bundle();
                 bl.putSerializable(Constant.COURSE_TABLE,courseTable);
@@ -316,17 +312,11 @@ public class DataService extends Service implements OkHttpDAO{
 
     @Override
     public void getPersonalInfo() {
-
-        Log.i("getPersonalInfo","********************* getPersonalInfo *********************");
-        String urlStr=mBaseURL+mPersonalInfoURL;//查询课表的URL
-        Log.i("getPersonalInfo","*********************"+urlStr+"*********************");
-
     }
 
     @Override
     public void getScore() {
 
-        Log.i("getScore","********************* getScore *********************");
         String urlStr=mBaseURL+mScorceURL;//查询课表的URL
         String referer=mBaseURL+Constant.STUDENT_URL +mUser.getName();//引用地址
         Request request = new Request.Builder().url(urlStr).addHeader("Referer",referer).build();
@@ -339,21 +329,27 @@ public class DataService extends Service implements OkHttpDAO{
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                //该次返回的页面是查询成绩的页面，但是默认没有成绩数据，需要重新递交请求
                 String html=response.body().string();
+                //保存隐藏的页面状态
                 mViewState=HtmlTools.findViewState(html);
-                score();
+                score();//请求成绩数据
             }
         });
+
     }
 
     @Override
     public void setJwURL(String url) {
         this.mBaseURL=url;
-        Log.i("设置新的教务网地址","==============="+mBaseURL);
+        //设置新的教务网地址后要初始化
         init();
     }
 
-    public void score() {
+    /**
+     * 请求成绩数据
+     */
+    private void score() {
 
         String urlStr=mBaseURL+mScorceURL;//查询课表的URL
         String ref=urlStr.substring(0,urlStr.indexOf("&xm=")+4);
@@ -361,9 +357,9 @@ public class DataService extends Service implements OkHttpDAO{
             int index=urlStr.indexOf("&gnmkdm=");
             ref=ref+URLEncoder.encode(urlStr.substring(ref.length(),index),"ISO-8859-1")+urlStr.substring(index);
         }catch (Exception e){
-            Log.i("score",">>>>>>>>    出错："+ref);
             return;
         }
+        //表单信息
         FormBody body=new FormBody.Builder()
                 .add("__VIEWSTATE",mViewState)
                 .add("ddlXN","")
@@ -387,6 +383,7 @@ public class DataService extends Service implements OkHttpDAO{
                 String html=response.body().string();
                 mViewState=HtmlTools.findViewState(html);
 
+                //获取成绩数据
                 ScoreTable scoreTable=HtmlTools.getScoreTable(html);
 
                 Intent it=new Intent(BroadcastAction.SCORE);
@@ -400,7 +397,7 @@ public class DataService extends Service implements OkHttpDAO{
     }
 
     /**
-     * 查找并保存查询各种信息的URL
+     * 在学生首页中查找并保存查询各种信息的URL
      * @param html HTML文档
      */
     private void saveQueryURL(String html) {
@@ -430,6 +427,9 @@ public class DataService extends Service implements OkHttpDAO{
 
     }
 
+    /**
+     * 请求失败或错误时，发送错误信息广播
+     */
     private void connectionError(){
         Intent it=new Intent();
         String errorMessege="连接失败！";

@@ -6,5 +6,5 @@ package com.fatcat.coursetable.jw.bean;
  *
  */
 public class PersonalInfo {
-
+    //暂无
 }

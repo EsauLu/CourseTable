@@ -8,14 +8,39 @@ import java.io.Serializable;
  *
  */
 public class StuSimpleInfo implements Serializable {
+
+	/**
+	 * 学生姓名
+	 */
 	private String name;
+
+	/**
+	 * 学号
+	 */
 	private String id;
+
+	/**
+	 * 系别
+	 */
 	private String department;
+
+	/**
+	 * 专业
+	 */
 	private String major;
+
+	/**
+	 * 班级
+	 */
 	private String classNum;
+
+	/**
+	 * 构造函数
+	 */
 	public StuSimpleInfo() {
 		// TODO Auto-generated constructor stub
 	}
+	
 	public String getName() {
 		return name;
 	}

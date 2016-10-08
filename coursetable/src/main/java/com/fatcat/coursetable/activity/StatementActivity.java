@@ -8,6 +8,7 @@ import com.fatcat.coursetable.R;
 import com.fatcat.coursetable.base.BaseActivity;
 
 /**
+ * 声明界面
  * Created by FatCat on 2016/10/7.
  */
 public class StatementActivity extends BaseActivity {

@@ -2,7 +2,6 @@ package com.fatcat.coursetable.uitls;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 /**
  * SharePreference封装

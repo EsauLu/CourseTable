@@ -1,7 +1,8 @@
 package com.fatcat.coursetable.jw.service;
 
 /**
- * Created by EsauL on 2016-10-01.
+ * 广播标识常量
+ * Created by EsauLu on 2016-10-01.
  */
 
 public class BroadcastAction {

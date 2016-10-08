@@ -16,6 +16,8 @@ import com.fatcat.coursetable.jw.bean.CourseScore;
 import java.util.List;
 
 /**
+ * 成绩适配器
+ *
  * Created by EsauL on 2016-10-07.
  */
 

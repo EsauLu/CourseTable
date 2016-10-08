@@ -9,7 +9,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.fatcat.coursetable.R;
 import com.fatcat.coursetable.base.BaseActivity;
@@ -20,10 +19,12 @@ import com.fatcat.coursetable.uitls.PrefUtils;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * 设置界面
+ */
 public class SettingActivity extends BaseActivity {
 
     private Toolbar mToolbar;
-    private TextView mCourseTableView;
     private TextView mCurrWeekView;
     private int mCurrWeekNum;
 
@@ -35,7 +36,6 @@ public class SettingActivity extends BaseActivity {
     @Override
     public void initView() {
         setContentView(R.layout.activity_setting);
-        mCourseTableView = (TextView) findViewById(R.id.setting_mycourse_des);
         mCurrWeekView = (TextView) findViewById(R.id.setting_curr_week_des);
         updateCurrWeek();
     }
@@ -62,7 +62,9 @@ public class SettingActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
+    /**
+     * 更新当前周
+     */
     public void updateCurrWeek() {
         long currTime = new Date().getTime();
         long beginTime = PrefUtils.getBeginTime(this, currTime);
@@ -140,7 +142,6 @@ public class SettingActivity extends BaseActivity {
                 if (which + 1 == mCurrWeekNum) {
                     return;
                 }
-                System.out.println("===============>>>>>>>"+mCurrWeekNum+" , "+(which+1));
                 PrefUtils.setBeginTime(SettingActivity.this, DateUtils.countBeginTime(Calendar.getInstance(), which + 1));
                 updateCurrWeek();
                 Intent intent = new Intent();

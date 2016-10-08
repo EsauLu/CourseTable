@@ -1,13 +1,11 @@
 package com.fatcat.coursetable.uitls;
 
-import android.util.Log;
-
 import java.util.Calendar;
 
 /**
  * 处理课表时间截的类
  *
- * Created by EsauL on 2016-10-06.
+ * Created by EsauLu on 2016-10-06.
  */
 
 public class DateUtils {
@@ -28,7 +26,6 @@ public class DateUtils {
         calendar.set(Calendar.SECOND,0);
         calendar.set(Calendar.MILLISECOND,0);
         long time=calendar.getTime().getTime()-(long)((day+7*currWeek))*dayMills;
-        Log.i("计算时间截：","》》》》》》》》》"+day+" , "+time);
         return time;
 
     }
@@ -40,10 +37,8 @@ public class DateUtils {
      * @return 返回一个代表周数差的整数
      */
     public static final int countCurrWeek(long beginTime,long endTime){
-        Log.i("时间截：","》》》》》》》》》"+beginTime+" , "+endTime);
         long diff=endTime-beginTime;
         int week=(int)(diff/(7*dayMills));
-        Log.i("时间截：","》》》》》》》》》"+week);
         return week;
     }
 
@@ -54,7 +49,6 @@ public class DateUtils {
      * @return 返回一个代表一个星期的第几天的整数
      */
     public static final int countCurrWeekDay(long beginTime,long endTime){
-        Log.i("时间截：","》》》》》》》》》"+beginTime+" , "+endTime);
         long diff=endTime-beginTime;
         long week=diff%(7*dayMills);
         int day=(int)(week/(dayMills));

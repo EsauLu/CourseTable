@@ -15,7 +15,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,7 +28,6 @@ import android.widget.Toast;
 import com.fatcat.coursetable.R;
 import com.fatcat.coursetable.base.BaseActivity;
 import com.fatcat.coursetable.jw.bean.CourseTable;
-import com.fatcat.coursetable.jw.bean.ScoreTable;
 import com.fatcat.coursetable.jw.bean.User;
 import com.fatcat.coursetable.jw.constant.Constant;
 import com.fatcat.coursetable.jw.factor.BeanFactor;
@@ -43,6 +41,7 @@ import java.util.Calendar;
 
 
 /**
+ * 登录界面
  * Created by FatCat on 2016/10/2.
  */
 public class CourseLoginActivity extends BaseActivity {
@@ -173,11 +172,8 @@ public class CourseLoginActivity extends BaseActivity {
         if(jwUrl.equals("")){
             jwUrl=Constant.BASE_URL;
             PrefUtils.setJwUrl(this,jwUrl);
-            Log.i("首次没有读取到教务网地址","==============="+jwUrl);
         }
         mJwUrlView.setText("教务网地址:"+jwUrl);
-
-        Log.i("首次读取教务网地址","==============="+jwUrl);
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(BroadcastAction.LOGIN_SUCCESS);
@@ -244,6 +240,11 @@ public class CourseLoginActivity extends BaseActivity {
                 .show();
     }
 
+    /**
+     * 整理输入的url
+     * @param url url
+     * @return  处理过的urll
+     */
     private String dealURL(String url){
         if(url.matches("http://(.*)/")){
             return url;
@@ -288,6 +289,9 @@ public class CourseLoginActivity extends BaseActivity {
         unregisterReceiver(mReceiver);
     }
 
+    /**
+     * 广播监听类
+     */
     private class MyBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -297,22 +301,27 @@ public class CourseLoginActivity extends BaseActivity {
             msg.setData(bdl);
             switch (action) {
                 case BroadcastAction.LOGIN_SUCCESS: {
+                    //登陆成功
                     msg.what = 0x123;
                     break;
                 }
                 case BroadcastAction.CHECK_IMG: {
+                    //获取验证码
                     msg.what = 0x124;
                     break;
                 }
                 case BroadcastAction.LOGIN_FAIL: {
+                    //登录失败
                     msg.what = 0x125;
                     break;
                 }
                 case BroadcastAction.COURSE_TABLE: {
+                    //接收课程表
                     msg.what = 0x126;
                     break;
                 }
                 case BroadcastAction.SCORE:{
+                    //接收成绩表
                     msg.what = 0x127;
                     break;
                 }

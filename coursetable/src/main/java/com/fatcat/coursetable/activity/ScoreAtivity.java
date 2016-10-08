@@ -15,7 +15,8 @@ import com.fatcat.coursetable.jw.constant.Constant;
 import java.util.ArrayList;
 
 /**
- * Created by EsauL on 2016-10-07.
+ * 成绩表界面
+ * Created by EsauLu on 2016-10-07.
  */
 
 public class ScoreAtivity extends BaseActivity {
@@ -41,12 +42,6 @@ public class ScoreAtivity extends BaseActivity {
         if(mCourseScores==null){
             mCourseScores=new ArrayList<>();
         }
-
-//        System.out.println("==========================================================");
-//        for(CourseScore cs:mCourseScores){
-//            System.out.println(">>>>  " + cs.getXnd()+" , "+cs.getXqd()+" , "+cs.getName()+" , "+cs.getCredit()+" , "+cs.getScore()+" , "+cs.getProperty());
-//        }
-//        System.out.println("==========================================================");
 
         mScoreAdapter=new ScoreAdapter(this,R.layout.score_item_layout,mCourseScores);
         mScoreList.setAdapter(mScoreAdapter);

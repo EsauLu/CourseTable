@@ -39,32 +39,32 @@ public class Constant {
 	public static final String STUDENT_URL ="xs_main.aspx?xh=";
 
 	/**
-	 * 地址
+	 * 取数据的key，地址
 	 */
 	public static final String JW_URL="jwurl";
 
 	/**
-	 * 验证码
+	 * 取数据的key，验证码
 	 */
 	public static final String CHECK="check";
 
 	/**
-	 * 登陆成功
+	 * 取数据的key，登陆成功
 	 */
 	public static  final String LOGIN_SUCCESS="loginSuccess";
 
 	/**
-	 * 登陆失败
+	 * 取数据的key，登陆失败
 	 */
 	public static  final String LOGIN_FAIL="loginfail";
 
 	/**
-	 * 课表
+	 * 取数据的key，课表
 	 */
 	public static final String COURSE_TABLE="courseTable";
 
 	/**
-	 * 成绩表
+	 * 取数据的key，成绩表
 	 */
 	public static final String SCORE_TABLE="scoreTable";
 	

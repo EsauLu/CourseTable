@@ -110,6 +110,11 @@ public class BeanFactor {
 		return stu;
 	}
 
+	/**
+	 * 获取课程成绩
+	 * @param info 课程成绩信息
+	 * @return 课程成绩实例
+     */
 	public static CourseScore createCourseScore(Map<String ,String> info){
 		CourseScore cs=new CourseScore();
 
