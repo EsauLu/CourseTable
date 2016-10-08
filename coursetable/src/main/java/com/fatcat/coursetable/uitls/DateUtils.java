@@ -20,11 +20,13 @@ public class DateUtils {
      */
     public static final long countBeginTime(Calendar calendar,int currWeek){
 
+        int day=calendar.get(Calendar.DAY_OF_WEEK)-1;
         calendar.set(Calendar.HOUR_OF_DAY,0);
         calendar.set(Calendar.MINUTE,0);
         calendar.set(Calendar.SECOND,0);
         calendar.set(Calendar.MILLISECOND,0);
-        long time=calendar.getTime().getTime()-(long)((calendar.get(Calendar.DAY_OF_WEEK)+7*currWeek))*dayMills;
+        long time=calendar.getTime().getTime()-(long)((day+7*currWeek))*dayMills;
+        Log.i("计算时间截：","》》》》》》》》》"+day+" , "+time);
         return time;
 
     }
@@ -39,6 +41,7 @@ public class DateUtils {
         Log.i("时间截：","》》》》》》》》》"+beginTime+" , "+endTime);
         long diff=endTime-beginTime;
         int week=(int)(diff/(7*dayMills));
+        Log.i("时间截：","》》》》》》》》》"+week);
         return week;
     }
 

@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 /**
+ * 课表主界面，显示课表内容
  * Created by FatCat on 2016/10/3.
  */
 public class CourseActivity extends BaseActivity implements AdapterView.OnItemSelectedListener{
@@ -76,7 +77,9 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
 
     private CourseBroadcast mCourseBroadcast;
 
-    //课程页面的button引用，6行7列
+    /**
+     * 课程页面的button引用，6行7列
+     */
     private int[][] lessons = {
             {R.id.lesson17, R.id.lesson11, R.id.lesson12, R.id.lesson13, R.id.lesson14, R.id.lesson15, R.id.lesson16},
             {R.id.lesson27, R.id.lesson21, R.id.lesson22, R.id.lesson23, R.id.lesson24, R.id.lesson25, R.id.lesson26},
@@ -85,7 +88,10 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
             {R.id.lesson57, R.id.lesson51, R.id.lesson52, R.id.lesson53, R.id.lesson54, R.id.lesson55, R.id.lesson56},
             {R.id.lesson67, R.id.lesson61, R.id.lesson62, R.id.lesson63, R.id.lesson64, R.id.lesson65, R.id.lesson66}
     };
-    //某节课的背景图,用于随机获取
+
+    /**
+     * 某节课的背景图,用于随机获取
+     */
     private int[] bg = {
             R.drawable.kb1, R.drawable.kb2, R.drawable.kb3, R.drawable.kb4, R.drawable.kb5,
             R.drawable.kb6, R.drawable.kb7, R.drawable.kb8, R.drawable.kb9, R.drawable.kb10,
@@ -94,12 +100,16 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
             R.drawable.kb21, R.drawable.kb22, R.drawable.kb23, R.drawable.kb24, R.drawable.kb25
     };
 
+    /**
+     * 更新界面显示
+     */
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
                 case 0x200:{
+                    //选择周数时调整课表
                     int weekNum = msg.getData().getInt("message");
                     if (mSelectWeek != weekNum&&mCourseTable!=null) {
                         mSelectWeek = weekNum;
@@ -108,6 +118,7 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
                     break;
                 }
                 case 0x201:{
+                    //更改当前周
                     updateCurrWeek();
                     if(mCurrWeek<=25){
                         mWeekDaySpinner.setSelection(mCurrWeek-1,true);
@@ -117,6 +128,7 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
                     break;
                 }
                 case 0x202:{
+                    //添加或者更换课表
                     if(updateCourse()){
                         mAdapter.notifyDataSetChanged();
                         rankCourse(mSelectWeek);
@@ -132,6 +144,7 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
         setContentView(R.layout.activity_course);
         mWeekDaySpinner = (Spinner) findViewById(R.id.week_day_spinner);
 
+        //初始化并注册广播
         mCourseBroadcast=new CourseBroadcast();
         IntentFilter filter=new IntentFilter();
         filter.addAction(BroadcastAction.UPDATE_CURR_WEEK_NUM);
@@ -146,24 +159,26 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
     }
 
     /**
-     * 排列课程到课表
+     * 排列课程到课表界面
      */
     private void rankCourse(int weekNum) {
+        //记录当前周是单周还是双周
         int currWeekState = (weekNum % 2 == 0) ? Course.DOUBLE_WEEK : Course.SINGLE_WEEK;
-        //排列课程名称
+        //排列课程信息
         for (final String key : mCourseMap.keySet()) {
             Course course = mCourseMap.get(key);
-            int courseState = course.getWeekState();
+            int courseState = course.getWeekState();//获取该课程的上课周的单双周
             int x = course.getNumber();
             int y = course.getDay() % 7;
             Button btn = (Button) findViewById(lessons[x / 2][y]);
-            String oldText = (String) btn.getText();
-            String newText = key.split("\\*")[0];
-            if (oldText.equals(newText)) continue;
+            String oldText = (String) btn.getText();//取得当前按钮上的文本
+            String newText = key.split("\\*")[0];//
+            if (oldText.equals(newText)) continue;//若该课程是已经存在的课程，不处理
             if (courseState == Course.ALL_WEEK || courseState == currWeekState || oldText == null || oldText.equals("")) {
                 btn.setText(newText);
                 btn.setTextColor(Color.WHITE);
                 btn.setBackgroundResource(bg[6]);
+                //注册点击课程时的时间监听器，用于打开课程详细信息界面
                 btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -186,16 +201,18 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
             for (int j = 0; j < 7; j++) {
                 Button btn = (Button) findViewById(lessons[i][j]);
                 String key = btn.getText() + "*" + (2 * i + 1) + j;
-                Course c = mCourseMap.get(key);
+                Course c = mCourseMap.get(key);//获得该课程的背景颜色
                 if (c == null) continue;
                 int state = c.getWeekState();
                 if (weekNum >= c.getStartWeek() && weekNum <= c.getEndWeek()) {
                     if (state == Course.ALL_WEEK || state == currWeekState) {
+                        //该课程当周要上课，则设置背景颜色
                         btn.setTextColor(Color.WHITE);
                         btn.setBackgroundResource(mBgColorMap.get(c.getName()));
                         continue;
                     }
                 }
+                //该课程当周不上课，则设置背景颜色为灰色
                 btn.setTextColor(Color.GRAY);
                 btn.setBackgroundResource(R.drawable.unavailable);
             }
@@ -222,6 +239,7 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
      */
     private boolean updateCourse(){
         updateCurrWeek();
+        //取出保存的课表
         String courseString = PrefUtils.getCourseInfo(CourseActivity.this, "");
         if (courseString == null || courseString.equals("")) {
             return false;
@@ -229,9 +247,9 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
         updateCurrWeek();//更新当前周
         //读取已经保存的课表
         Gson gson = new Gson();
-        mCourseTable = gson.fromJson(courseString, CourseTable.class);
-        mCourseMap = new HashMap<>();
-        mBgColorMap = new HashMap<>();
+        mCourseTable = gson.fromJson(courseString, CourseTable.class);//获取课表对象
+        mCourseMap.clear();
+        mBgColorMap.clear();
         int k = 0;
         for (Course c : mCourseTable.getCourses()) {
             String key = c.getName() + "@" + c.getClassRoom() + "*" + c.getNumber() + (c.getDay() % 7);
@@ -249,6 +267,8 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
     @Override
     protected void initData() {
 
+        mCourseMap = new HashMap<>();
+        mBgColorMap = new HashMap<>();
         mCurrWeek=0;
 
         if(!updateCourse()){
@@ -286,6 +306,7 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
 
     }
 
+    //事件处理
     public void onClick(View view){
         switch (view.getId()){
             case R.id.tv_setting_title:{
@@ -349,6 +370,9 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
         return mCourseTable.getCurrXqd();
     }
 
+    /**
+     * 广播监听类，负责接收相关数据变更广播以便更新界面
+     */
     class CourseBroadcast extends BroadcastReceiver{
         @Override
         public void onReceive(Context context, Intent intent) {

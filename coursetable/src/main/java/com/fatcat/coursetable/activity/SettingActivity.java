@@ -130,7 +130,7 @@ public class SettingActivity extends BaseActivity {
         }
         String[] num = new String[25];
         for (int i = 0; i < 25; i++) {
-            num[i] = "第" + String.valueOf(i + 1) + "周";
+            num[i] = "第" + String.valueOf(i+1) + "周";
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
         builder.setTitle("选择当前周");
@@ -140,6 +140,7 @@ public class SettingActivity extends BaseActivity {
                 if (which + 1 == mCurrWeekNum) {
                     return;
                 }
+                System.out.println("===============>>>>>>>"+mCurrWeekNum+" , "+(which+1));
                 PrefUtils.setBeginTime(SettingActivity.this, DateUtils.countBeginTime(Calendar.getInstance(), which + 1));
                 updateCurrWeek();
                 Intent intent = new Intent();
