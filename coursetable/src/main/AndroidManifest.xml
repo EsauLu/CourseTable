@@ -14,7 +14,6 @@
         <activity android:name=".activity.CourseActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -23,6 +22,24 @@
         <activity android:name=".activity.StatementActivity" />
         <activity android:name=".activity.ScoreAtivity" />
 
+        <activity
+            android:name=".activity.SettingActivity"
+            android:label="@string/title_activity_setting"
+            android:theme="@style/AppTheme">
+
+        </activity>
+
+        <receiver android:name=".widget.CourseWidgetProvider" android:label="吉珠课表">
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/ocurse_widget_info"/>
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="com.jluzh.jw.updateweeknum" />
+                <action android:name="com.jluzh.jw.updatecourse" />
+            </intent-filter>
+        </receiver>
+
         <service
             android:name=".jw.service.DataService"
             android:enabled="true"
@@ -30,12 +47,6 @@
 
         </service>
 
-        <activity
-            android:name=".activity.SettingActivity"
-            android:label="@string/title_activity_setting"
-            android:theme="@style/AppTheme">
-
-        </activity>
     </application>
 
 </manifest>

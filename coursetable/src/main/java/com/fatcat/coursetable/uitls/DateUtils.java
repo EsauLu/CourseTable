@@ -52,7 +52,7 @@ public class DateUtils {
         long diff=endTime-beginTime;
         long week=diff%(7*dayMills);
         int day=(int)(week/(dayMills));
-        return day;
+        return day%7;
     }
 
 }
