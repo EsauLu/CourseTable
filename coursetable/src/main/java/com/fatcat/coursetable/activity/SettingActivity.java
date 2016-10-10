@@ -147,6 +147,9 @@ public class SettingActivity extends BaseActivity {
                 Intent intent = new Intent();
                 intent.setAction(BroadcastAction.UPDATE_CURR_WEEK_NUM);
                 SettingActivity.this.sendBroadcast(intent);
+                intent = new Intent();
+                intent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
+                SettingActivity.this.sendBroadcast(intent);
             }
         });
         builder.create().show();

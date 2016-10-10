@@ -1,5 +1,9 @@
 package com.fatcat.coursetable.jw.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.util.Log;
+
 import java.io.Serializable;
 
 /**
@@ -7,22 +11,22 @@ import java.io.Serializable;
  *
  * @author EsauLu
  */
-public class Course implements Serializable {
+public class Course implements Serializable,Parcelable {
 
 	/**
 	 * 全部周数
 	 */
-	public static final int ALL_WEEK = 0;
+	public transient static final int ALL_WEEK = 0;
 
 	/**
 	 * 单周
 	 */
-	public static final int SINGLE_WEEK = 1;
+	public transient static final int SINGLE_WEEK = 1;
 
 	/**
 	 * 双周
 	 */
-	public static final int DOUBLE_WEEK = 2;
+	public transient static final int DOUBLE_WEEK = 2;
 
 	/**
 	 * 姓名
@@ -287,7 +291,7 @@ public class Course implements Serializable {
 	/**
 	 * 设置课程结束周
 	 *
-	 * @param startWeek 课程结束周
+	 * @param endWeek 课程结束周
 	 */
 	public void setEndWeek(int endWeek) {
 		this.endWeek = endWeek;
@@ -326,6 +330,59 @@ public class Course implements Serializable {
 				", schoolTime=" + schoolTime +
 				'}';
 	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+
+		dest.writeString(name);
+		dest.writeString(classRoom);
+		dest.writeString(teacher);
+		dest.writeString(classTime);
+		dest.writeString(weekNum);
+		dest.writeInt(startWeek);
+		dest.writeInt(endWeek);
+		dest.writeInt(weekState);
+		dest.writeValue(schoolTime);
+
+	}
+
+	public static final Parcelable.Creator<Course> CREATOR = new Parcelable.Creator<Course>(){
+
+		@Override
+		public Course createFromParcel(Parcel source) {
+			Log.i(">>>>>>>>>","=========================读取==========================");
+			Log.i("+++++","=========================读取==========================");
+
+			Course course=new Course();
+
+			course.setName(source.readString());
+			course.setClassRoom(source.readString());
+			course.setTeacher(source.readString());
+			course.setClassTime(source.readString());
+			course.setWeekNum(source.readString());
+
+			course.setStartWeek(source.readInt());
+			course.setEndWeek(source.readInt());
+			course.setWeekState(source.readInt());
+
+			course.setSchoolTime((SchoolTime) source.readValue(Course.class.getClassLoader()));
+
+			return course;
+
+		}
+
+		@Override
+		public Course[] newArray(int size) {
+			return new Course[size];
+		}
+
+	};
+
 }
 
 

@@ -35,10 +35,13 @@
                 android:resource="@xml/ocurse_widget_info"/>
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
-                <action android:name="com.jluzh.jw.updateweeknum" />
-                <action android:name="com.jluzh.jw.updatecourse" />
+                <action android:name="com.jluzh.jw.updatepreweekday"/>
+                <action android:name="com.jluzh.jw.updatenextweekday"/>
             </intent-filter>
         </receiver>
+
+        <service android:name=".widget.CourseWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
 
         <service
             android:name=".jw.service.DataService"
