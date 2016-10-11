@@ -149,10 +149,7 @@ public class SettingActivity extends BaseActivity {
                 Intent intent = new Intent();
                 intent.setAction(BroadcastAction.UPDATE_CURR_WEEK_NUM);
                 SettingActivity.this.sendBroadcast(intent);
-                Log.i(" oid clickCurrWee","----------------------->>>>>>>>android.appwidget.action.APPWIDGET_UPDATE");
-                Intent intent2 = new Intent();
-                intent2.setAction(CourseWidgetProvider.UPDATE_ALL);
-                SettingActivity.this.sendBroadcast(intent2);
+
             }
         });
         builder.create().show();

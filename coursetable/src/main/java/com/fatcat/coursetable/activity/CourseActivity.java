@@ -23,6 +23,7 @@ import com.fatcat.coursetable.jw.bean.CourseTable;
 import com.fatcat.coursetable.jw.service.BroadcastAction;
 import com.fatcat.coursetable.uitls.DateUtils;
 import com.fatcat.coursetable.uitls.PrefUtils;
+import com.fatcat.coursetable.widget.CourseWidgetProvider;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -125,6 +126,9 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
                     }
                     mAdapter.notifyDataSetChanged();
                     rankCourse(mCurrWeek);
+
+                    //更新桌面小部件
+                    updateWidget();
                     break;
                 }
                 case 0x202:{
@@ -133,6 +137,8 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
                         mAdapter.notifyDataSetChanged();
                         rankCourse(mSelectWeek);
                     }
+                    //更新桌面小部件
+                    updateWidget();
                     break;
                 }
             }
@@ -304,6 +310,8 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
         }
         mWeekDaySpinner.setOnItemSelectedListener(this);
 
+        //更新桌面小部件
+        updateWidget();
     }
 
     //事件处理
@@ -315,6 +323,15 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
                 break;
             }
         }
+    }
+
+    /**
+     * 更新桌面小部件
+     */
+    private void updateWidget(){
+        Intent intent = new Intent();
+        intent.setAction(CourseWidgetProvider.UPDATE_UI);
+        sendBroadcast(intent);
     }
 
     @Override

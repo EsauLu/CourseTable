@@ -35,11 +35,11 @@
                 android:resource="@xml/ocurse_widget_info"/>
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
-                <action android:name="com.jluzh.jw.update"/>
+                <action android:name="update_all_widget"/>
             </intent-filter>
         </receiver>
 
-        <service android:name=".widget.CourseWidgetService"
+        <service android:name=".widget.CourseRemoteViewService"
             android:permission="android.permission.BIND_REMOTEVIEWS"/>
 
         <service

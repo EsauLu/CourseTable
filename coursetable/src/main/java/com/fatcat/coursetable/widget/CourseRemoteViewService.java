@@ -1,6 +1,5 @@
 package com.fatcat.coursetable.widget;
 
-import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +9,9 @@ import android.widget.RemoteViewsService;
 
 import com.fatcat.coursetable.R;
 import com.fatcat.coursetable.jw.bean.Course;
+import com.fatcat.coursetable.jw.bean.CourseTable;
+import com.fatcat.coursetable.uitls.PrefUtils;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -18,11 +20,11 @@ import java.util.ArrayList;
  * Created by EsauLu on 2016-10-10.
  */
 
-public class CourseWidgetService extends RemoteViewsService {
+public class CourseRemoteViewService extends RemoteViewsService {
 
 //    public static
 
-    public CourseWidgetService() {
+    public CourseRemoteViewService() {
         super();
     }
 
@@ -34,27 +36,46 @@ public class CourseWidgetService extends RemoteViewsService {
     public class CourseWidgetFactory implements RemoteViewsService.RemoteViewsFactory{
 
         private Context mContext;
-
-        private int mAppWidgetId;
-
         private ArrayList<Course> mCourseList;
 
-        @SuppressWarnings("unchecked")
         public CourseWidgetFactory(Context context, Intent intent) {
             mContext = context;
-            mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
             mCourseList=new ArrayList<>();
         }
 
         private void initData(){
 
             mCourseList.clear();
-            mCourseList.addAll(CourseWidgetProvider.mDayCourse);
-            Log.i("CourseWidgetFactory","=========================================================");
-            for(Course c:mCourseList){
-                Log.i("CourseWidgetFactory",""+c.getName());
+            CourseTable ct=null;
+            String courseString = PrefUtils.getCourseInfo(mContext, "");
+            if (courseString != null && !courseString.equals("")) {
+                Gson gson = new Gson();
+                ct = gson.fromJson(courseString, CourseTable.class);//获取课表对象
+            }else{
+                return;
             }
-            Log.i("CourseWidgetFactory","=========================================================");
+            int weekDay=CourseWidgetProvider.WEEK_DAY;
+            int weekNum=CourseWidgetProvider.WEEK_NUM;
+            int weekState =weekNum%2==0 ? Course.DOUBLE_WEEK : Course.SINGLE_WEEK;
+            mCourseList.clear();
+            for(Course c:ct.getCourses()){
+                if(c.getDay()==weekDay){
+                    int cState=c.getWeekState();
+                    if(c.getStartWeek()<=weekNum&&c.getEndWeek()>=weekNum){
+                        if(cState==Course.ALL_WEEK||cState==weekState){
+                            mCourseList.add(c);
+                            Log.i("+initDate+","++++++++++++++++++++++"+c.getName()+"+++++++++++++++++++++++");
+                        }
+                    }
+                }
+            }
+
+////            mCourseList.addAll(CourseWidgetProvider.mDayCourse);
+//            Log.i("CourseWidgetFactory","=========================================================");
+//            for(Course c:mCourseList){
+//                Log.i("CourseWidgetFactory",""+c.getName());
+//            }
+//            Log.i("CourseWidgetFactory","=========================================================");
 
         }
 

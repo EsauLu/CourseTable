@@ -9,8 +9,8 @@
         android:layout_height="match_parent"
         android:textSize="16sp"
         android:gravity="center"
-        android:text="3-4"
         android:padding="10dp"
+        android:textColor="#333333"
         />
 
     <LinearLayout
@@ -25,16 +25,16 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:gravity="center_vertical"
-            android:text="课程名称"
-            android:padding="5dp"/>
+            android:padding="5dp"
+            android:textColor="#000000"/>
         <TextView
             android:id="@+id/tv_classroom_of_course"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:textSize="16sp"
-            android:text="教室"
-            android:padding="5dp"/>
+            android:padding="5dp"
+            android:textColor="#6499f4"/>
     </LinearLayout>
 
 </LinearLayout>
