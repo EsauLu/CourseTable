@@ -1,6 +1,7 @@
 package com.fatcat.coursetable.widget;
 
 import android.appwidget.AppWidgetManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
  */
 
 public class CourseWidgetService extends RemoteViewsService {
+
+//    public static
 
     public CourseWidgetService() {
         super();
@@ -38,11 +41,6 @@ public class CourseWidgetService extends RemoteViewsService {
 
         @SuppressWarnings("unchecked")
         public CourseWidgetFactory(Context context, Intent intent) {
-            Log.i(">>>>>>>>>","=========================构造函数==========================");
-            Log.i(">>>>>>>>>","=========================构造函数==========================");
-            Log.i(">>>>>>>>>","=========================构造函数==========================");
-            Log.i(">>>>>>>>>","=========================构造函数==========================");
-            Log.i(">>>>>>>>>","=========================构造函数==========================");
             mContext = context;
             mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
             mCourseList=new ArrayList<>();
@@ -50,35 +48,14 @@ public class CourseWidgetService extends RemoteViewsService {
 
         private void initData(){
 
-            Log.i(">>>>>>>>>","=========================list==========================");
-            Log.i(">>>>>>>>>","=========================list==========================");
-            Log.i(">>>>>>>>>","=========================list==========================");
-            Log.i(">>>>>>>>>","=========================list==========================");
-            Log.i(">>>>>>>>>","=========================list==========================");
-            Log.i(">>>>>>>>>","=========================list==========================");
             mCourseList.clear();
             mCourseList.addAll(CourseWidgetProvider.mDayCourse);
-            if(mCourseList!=null){
-                Log.i(">>>>>>>>>","=========================有数据==========================");
-                Log.i(">>>>>>>>>","=========================有数据==========================");
-                Log.i(">>>>>>>>>","=========================有数据==========================");
-                Log.i(">>>>>>>>>","=========================有数据==========================");
-                Log.i(">>>>>>>>>","=========================有数据==========================");
-                Log.i(">>>>>>>>>","========================="+mCourseList.size()+"==========================");
-
-                for(Course c:mCourseList){
-                    Log.i(">>>>>>>>>","========================="+c.getName()+"==========================");
-                }
-
-            }else{
-
-                Log.i(">>>>>>>>>","=========================无数据==========================");
-                Log.i(">>>>>>>>>","=========================无数据==========================");
-                Log.i(">>>>>>>>>","=========================无数据==========================");
-                Log.i(">>>>>>>>>","=========================无数据==========================");
-                Log.i(">>>>>>>>>","=========================无数据==========================");
-                Log.i(">>>>>>>>>","=========================无数据==========================");
+            Log.i("CourseWidgetFactory","=========================================================");
+            for(Course c:mCourseList){
+                Log.i("CourseWidgetFactory",""+c.getName());
             }
+            Log.i("CourseWidgetFactory","=========================================================");
+
         }
 
         @Override
@@ -137,6 +114,13 @@ public class CourseWidgetService extends RemoteViewsService {
             return true;
         }
 
+    }
+
+    public class WidgetUIBroadcastReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+        }
     }
 
 }

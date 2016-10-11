@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -18,7 +19,6 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 
 /**
  * 窗口小部件
@@ -28,8 +28,9 @@ import java.util.HashSet;
 
 public class CourseWidgetProvider extends AppWidgetProvider {
 
-    public static final String UPDTE_WIDGET_PRE_WEEK_DAY="com.jluzh.jw.updatepreweekday";
-    public static final String UPDTE_WIDGET_NEXT_WEEK_DAY="com.jluzh.jw.updatenextweekday";
+    public static final int PRE_BUTTON=1;
+    public static final int NEXT_BUTTON=2;
+    public static final String UPDATE_ALL="com.jluzh.jw.update";
 
     private CourseTable mCourseTable;
 
@@ -40,6 +41,7 @@ public class CourseWidgetProvider extends AppWidgetProvider {
     public static ArrayList<Course> mDayCourse=new ArrayList<>();
 
     public CourseWidgetProvider() {
+
     }
 
     @Override
@@ -60,6 +62,52 @@ public class CourseWidgetProvider extends AppWidgetProvider {
 
     }
 
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
+        Log.i("++++++onReceive++++++++","+++++++---------广播----------++++++");
+        Log.i("++++++onReceive++++++++","+++++++---------广播----------++++++");
+        Log.i("+++++++onReceive+++++++","+++++++---------广播----------++++++");
+        Uri data=intent.getData();
+        if(intent.hasCategory(Intent.CATEGORY_ALTERNATIVE)){
+            int id=Integer.parseInt(data.getSchemeSpecificPart());
+            changeDay(context,id);
+        }
+        String ac=intent.getAction();
+        if(ac!=null&&ac.equals(UPDATE_ALL))
+        {
+            Log.i("+++++++onReceive+++++++","+++++++---------更新----------++++++");
+            Log.i("+++++++onReceive+++++++","+++++++---------更新----------++++++");
+            Log.i("+++++++onReceive+++++++","+++++++---------更新----------++++++");
+            changeDay(context,0);
+        }
+    }
+
+    private void changeDay(Context context, int btn_id){
+        updateWeekDay(context);
+        updateCourse(context);
+        switch (btn_id){
+            case PRE_BUTTON:
+                mWeekDay=(mWeekDay-1+7)%7;
+                break;
+            case NEXT_BUTTON:
+                mWeekDay=(mWeekDay+1)%7;
+                break;
+        }
+        updateCourseList(context);
+        AppWidgetManager manager=AppWidgetManager.getInstance(context);
+        int[] ids=manager.getAppWidgetIds(new ComponentName(context.getPackageName(),CourseWidgetProvider.class.getName()));
+        for(int id:ids){
+            RemoteViews remoteViews=new RemoteViews(context.getPackageName(),R.layout.widget_list_layout);
+            remoteViews.setTextViewText(R.id.tv_widget_week_day,getWeekDayStr(mWeekDay));
+            remoteViews.setTextViewText(R.id.tv_widget_week_num,"第"+mCurrWeek+"周");
+            manager.updateAppWidget(id,remoteViews);
+            manager.notifyAppWidgetViewDataChanged(id,R.id.lv_widget_course_list);
+            Log.i("++++changeDay++++++","******************"+id+"+++++++++++++");
+        }
+
+    }
+
     /**
      * 更新星期
      */
@@ -70,7 +118,7 @@ public class CourseWidgetProvider extends AppWidgetProvider {
         if(mWeekDay==-1){
             mWeekDay=DateUtils.countCurrWeekDay(beginTime,currTime);//星期几，0代表星期日
         }
-        Log.i("********>>>>********","week day : "+mWeekDay);
+        Log.i("********updateWeekDay*","week day : "+mWeekDay);
     }
 
     private String getWeekDayStr(int day){
@@ -98,49 +146,8 @@ public class CourseWidgetProvider extends AppWidgetProvider {
                 str="星期六";
                 break;
         }
-        Log.i("++++++++++++++","++++++++++++++++"+str+"+++++++++++++");
+        Log.i("+++getWeekDayStr++++","++++++++++++++++"+str+"+++++++++++++");
         return str;
-    }
-
-    private void changeDay(Context context, Intent intent){
-        updateCourseList(context);
-
-//        int id = intent.getIntExtra("id", AppWidgetManager.INVALID_APPWIDGET_ID);
-        AppWidgetManager manager=AppWidgetManager.getInstance(context);
-        int[] ids=manager.getAppWidgetIds(new ComponentName(context.getPackageName(),CourseWidgetProvider.class.getName()));
-        for(int id:ids){
-            RemoteViews remoteViews=new RemoteViews(context.getPackageName(),R.layout.widget_list_layout);
-            remoteViews.setTextViewText(R.id.tv_widget_week_day,getWeekDayStr(mWeekDay));
-            remoteViews.setTextViewText(R.id.tv_widget_week_num,"第"+mCurrWeek+"周");
-            manager.updateAppWidget(id,remoteViews);
-            manager.notifyAppWidgetViewDataChanged(id,R.id.lv_widget_course_list);
-            Log.i("++++idididid++++++","******************"+id+"+++++++++++++");
-        }
-
-    }
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        super.onReceive(context, intent);
-        Log.i("++++++++++++++","+++++++---------广播----------++++++");
-        Log.i("++++++++++++++","+++++++---------广播----------++++++");
-        Log.i("++++++++++++++","+++++++---------广播----------++++++");
-        switch (intent.getAction()){
-            case UPDTE_WIDGET_PRE_WEEK_DAY:{
-                Log.i("++++++++++++++",mWeekDay+"+++++++++++++");
-                Log.i("++++++++++++++",mWeekDay+"+++++++++++++");
-                mWeekDay=(mWeekDay+7-1)%7;
-                changeDay(context,intent);
-                break;
-            }
-            case UPDTE_WIDGET_NEXT_WEEK_DAY:{
-                Log.i("++++++++++++++",mWeekDay+"+++++++++++++");
-                Log.i("++++++++++++++",mWeekDay+"+++++++++++++");
-                mWeekDay=(mWeekDay+1)%7;
-                changeDay(context,intent);
-                break;
-            }
-        }
     }
 
     @Override
@@ -152,50 +159,45 @@ public class CourseWidgetProvider extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
 
-        updateCourseList(context);
-        Log.i("####onUpdate#####","#######################################################################################################"+appWidgetIds.length+"#######################");
-        for(int id:appWidgetIds){
-            updateWidgetView(context,appWidgetManager,id);
-            Log.i("####onUpdate#####","#######################"+id+"#######################");
-        }
-        Log.i("####onUpdate#####","#######################"+mWeekDay+"#######################");
+        updateWidgetView(context,appWidgetManager);
 
     }
 
-    private void updateWidgetView(Context context, AppWidgetManager appWidgetManager, int widgetId){
-
-        RemoteViews remoteViews=new RemoteViews(context.getPackageName(), R.layout.widget_list_layout);
-
-        remoteViews.setTextViewText(R.id.tv_widget_week_num,"第"+mCurrWeek+"周");
-
-        remoteViews.setTextViewText(R.id.tv_widget_week_day,getWeekDayStr(mWeekDay));
-
-        Intent preBtnItent=new Intent();
-        preBtnItent.setAction(UPDTE_WIDGET_PRE_WEEK_DAY);
-        preBtnItent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-        PendingIntent priPi=PendingIntent.getBroadcast(context,0,preBtnItent,0);
-        remoteViews.setOnClickPendingIntent(R.id.ib_pre_day,priPi);
-
-        Intent nextBtnItent=new Intent();
-        nextBtnItent.setAction(UPDTE_WIDGET_NEXT_WEEK_DAY);
-        nextBtnItent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-        PendingIntent nextPi=PendingIntent.getBroadcast(context,0,nextBtnItent,0);
-        remoteViews.setOnClickPendingIntent(R.id.ib_next_day,nextPi);
-
-        Intent intent=new Intent(context,CourseWidgetService.class);
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
-        remoteViews.setRemoteAdapter(R.id.lv_widget_course_list,intent);
-
-        appWidgetManager.updateAppWidget(widgetId,remoteViews);
-
-        Log.i("#########"+widgetId,"#######################"+mWeekDay+"#######################");
-
-    }
-
-    private void updateCourseList(Context context){
+    private void updateWidgetView(Context context, AppWidgetManager appWidgetManager){
 
         updateWeekDay(context);
         updateCourse(context);
+        updateCourseList(context);
+        int[] ids=appWidgetManager.getAppWidgetIds(new ComponentName(context.getPackageName(),CourseWidgetProvider.class.getName()));
+        for(int id:ids){
+
+            RemoteViews remoteViews=new RemoteViews(context.getPackageName(), R.layout.widget_list_layout);
+            remoteViews.setTextViewText(R.id.tv_widget_week_num,"第"+mCurrWeek+"周");
+            remoteViews.setTextViewText(R.id.tv_widget_week_day,getWeekDayStr(mWeekDay));
+            remoteViews.setOnClickPendingIntent(R.id.ib_pre_day,getBtnPendingIntent(context,PRE_BUTTON));
+            remoteViews.setOnClickPendingIntent(R.id.ib_next_day,getBtnPendingIntent(context,NEXT_BUTTON));
+
+            Intent intent=new Intent(context,CourseWidgetService.class);
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id);
+            remoteViews.setRemoteAdapter(R.id.lv_widget_course_list,intent);
+
+            appWidgetManager.updateAppWidget(id,remoteViews);
+
+            Log.i("#updateWidgetView#####"+id,"#######################"+mWeekDay+"#######################");
+
+        }
+
+    }
+
+    private PendingIntent getBtnPendingIntent(Context context, int buttonId){
+        Intent intent=new Intent(context,CourseWidgetProvider.class);
+        intent.addCategory(Intent.CATEGORY_ALTERNATIVE);
+        intent.setData(Uri.parse("custom:"+buttonId));
+        PendingIntent pendingIntent=PendingIntent.getBroadcast(context,0,intent,PendingIntent.FLAG_CANCEL_CURRENT);
+        return pendingIntent;
+    }
+
+    private void updateCourseList(Context context){
         int weekState = mCurrWeek%2==0 ? Course.DOUBLE_WEEK : Course.SINGLE_WEEK;
         mDayCourse.clear();
         for(Course c:mCourseTable.getCourses()){
@@ -204,6 +206,7 @@ public class CourseWidgetProvider extends AppWidgetProvider {
                 if(c.getStartWeek()<=mCurrWeek&&c.getEndWeek()>=mCurrWeek){
                     if(cState==Course.ALL_WEEK||cState==weekState){
                         mDayCourse.add(c);
+                        Log.i("+updateCourseList+","++++++++++++++++++++++"+c.getName()+"+++++++++++++++++++++++");
                     }
                 }
             }

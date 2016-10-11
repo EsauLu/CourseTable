@@ -35,8 +35,7 @@
                 android:resource="@xml/ocurse_widget_info"/>
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
-                <action android:name="com.jluzh.jw.updatepreweekday"/>
-                <action android:name="com.jluzh.jw.updatenextweekday"/>
+                <action android:name="com.jluzh.jw.update"/>
             </intent-filter>
         </receiver>
 
