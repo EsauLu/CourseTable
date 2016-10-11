@@ -172,11 +172,13 @@ public class CourseWidgetProvider extends AppWidgetProvider {
 
         Intent preBtnItent=new Intent();
         preBtnItent.setAction(UPDTE_WIDGET_PRE_WEEK_DAY);
+        preBtnItent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
         PendingIntent priPi=PendingIntent.getBroadcast(context,0,preBtnItent,0);
         remoteViews.setOnClickPendingIntent(R.id.ib_pre_day,priPi);
 
         Intent nextBtnItent=new Intent();
         nextBtnItent.setAction(UPDTE_WIDGET_NEXT_WEEK_DAY);
+        nextBtnItent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
         PendingIntent nextPi=PendingIntent.getBroadcast(context,0,nextBtnItent,0);
         remoteViews.setOnClickPendingIntent(R.id.ib_next_day,nextPi);
 
