@@ -43,6 +43,7 @@
                 android:paddingRight="20dp"
                 android:text="&lt;"
                 android:textSize="24sp"
+                android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
                 />
             <TextView
@@ -62,6 +63,7 @@
                 android:textSize="24sp"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
+                android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"/>
 
         </LinearLayout>

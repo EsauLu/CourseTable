@@ -253,7 +253,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
-                        android:text="版本号 V1.0.0"
+                        android:text="版本号 V1.1012.1938"
                         android:textSize="14sp" />
 
                 </LinearLayout>
