@@ -7,7 +7,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.fatcat.coursetable.R;
@@ -30,11 +29,17 @@ public class CourseWidgetProvider extends AppWidgetProvider {
     public static int WEEK_DAY = -1;
     public static int WEEK_NUM = -1;
 
+
+    public CourseWidgetProvider() {
+        super();
+    }
+    
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
         Uri data=intent.getData();
         if(intent.hasCategory(Intent.CATEGORY_ALTERNATIVE)){
+            //点击按钮发送过来的Intent
             int buttonId=Integer.parseInt(data.getSchemeSpecificPart());
             WEEK_DAY=intent.getIntExtra("day",WEEK_DAY);
             updateAll(context , AppWidgetManager.getInstance(context) , buttonId);
@@ -43,16 +48,18 @@ public class CourseWidgetProvider extends AppWidgetProvider {
         }
     }
 
-    public CourseWidgetProvider() {
-        super();
-    }
-
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
         updateAll(context,appWidgetManager,0);
     }
 
+    /**
+     * 更新界面
+     * @param context 上下文
+     * @param appWidgetManager AppWidgetManager对象
+     * @param buttonId 按钮id
+     */
     private void updateAll(Context context,AppWidgetManager appWidgetManager,int buttonId){
 
         updateWeekDay(context);
@@ -92,9 +99,14 @@ public class CourseWidgetProvider extends AppWidgetProvider {
         if(WEEK_DAY==-1){
             WEEK_DAY=DateUtils.countCurrWeekDay(beginTime,currTime);//星期几，0代表星期日
         }
-        Log.i("********updateWeekDay*","week day : "+WEEK_DAY);
     }
 
+    /**
+     * 获取PendingIntent对象
+     * @param context 上下文
+     * @param buttonId 按钮id
+     * @return 返回一个PendingIntent对象
+     */
     private PendingIntent getBtnPendingIntent(Context context, int buttonId){
         Intent intent=new Intent(context,CourseWidgetProvider.class);
         intent.addCategory(Intent.CATEGORY_ALTERNATIVE);
@@ -119,7 +131,7 @@ public class CourseWidgetProvider extends AppWidgetProvider {
         super.onDeleted(context, appWidgetIds);
     }
 
-
+    //获取星期几的字符串
     private String getWeekDayStr(int day){
         String str="";
         switch (day){
@@ -145,7 +157,6 @@ public class CourseWidgetProvider extends AppWidgetProvider {
                 str="星期六";
                 break;
         }
-        Log.i("+++getWeekDayStr++++","++++++++++++++++"+str+"+++++++++++++");
         return str;
     }
 }

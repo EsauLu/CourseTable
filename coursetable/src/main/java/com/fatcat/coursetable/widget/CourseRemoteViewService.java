@@ -3,7 +3,6 @@ package com.fatcat.coursetable.widget;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -21,8 +20,6 @@ import java.util.ArrayList;
  */
 
 public class CourseRemoteViewService extends RemoteViewsService {
-
-//    public static
 
     public CourseRemoteViewService() {
         super();
@@ -49,14 +46,17 @@ public class CourseRemoteViewService extends RemoteViewsService {
             CourseTable ct=null;
             String courseString = PrefUtils.getCourseInfo(mContext, "");
             if (courseString != null && !courseString.equals("")) {
+                //获取课表
                 Gson gson = new Gson();
                 ct = gson.fromJson(courseString, CourseTable.class);//获取课表对象
             }else{
                 return;
             }
-            int weekDay=CourseWidgetProvider.WEEK_DAY;
-            int weekNum=CourseWidgetProvider.WEEK_NUM;
+            int weekDay=CourseWidgetProvider.WEEK_DAY;//获取星期几
+            int weekNum=CourseWidgetProvider.WEEK_NUM;//获取周数
             int weekState =weekNum%2==0 ? Course.DOUBLE_WEEK : Course.SINGLE_WEEK;
+
+            //查找WEEK_DAY的课程
             mCourseList.clear();
             for(Course c:ct.getCourses()){
                 if(c.getDay()==weekDay){
@@ -64,18 +64,10 @@ public class CourseRemoteViewService extends RemoteViewsService {
                     if(c.getStartWeek()<=weekNum&&c.getEndWeek()>=weekNum){
                         if(cState==Course.ALL_WEEK||cState==weekState){
                             mCourseList.add(c);
-                            Log.i("+initDate+","++++++++++++++++++++++"+c.getName()+"+++++++++++++++++++++++");
                         }
                     }
                 }
             }
-
-////            mCourseList.addAll(CourseWidgetProvider.mDayCourse);
-//            Log.i("CourseWidgetFactory","=========================================================");
-//            for(Course c:mCourseList){
-//                Log.i("CourseWidgetFactory",""+c.getName());
-//            }
-//            Log.i("CourseWidgetFactory","=========================================================");
 
         }
 
