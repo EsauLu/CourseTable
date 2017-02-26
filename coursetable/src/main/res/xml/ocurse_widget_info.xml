@@ -7,7 +7,7 @@
     android:minWidth="240dp"
 
     android:resizeMode="horizontal|vertical"
-    
+
     android:widgetCategory="home_screen"
     >
 
