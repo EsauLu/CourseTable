@@ -143,7 +143,10 @@ public class CourseTable implements Serializable{
 		this.simpleInfo = simpleInfo;
 	}
 
-	
+	@Override
+	public String toString() {
+		return courses.toString();
+	}
 }
 
 

@@ -13,6 +13,7 @@
         android:background="@color/colorBackground"
         android:minHeight="?attr/actionBarSize"
         app:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -72,7 +73,7 @@
                         android:textSize="18sp" />
 
                     <TextView
-                        android:id="@+id/setting_mycourse_des"
+                        android:id="@+id/tv_curr_xnd"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
@@ -253,7 +254,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
-                        android:text="版本号 V1.1015.1940"
+                        android:text="版本号 V2.0227.1620"
                         android:textSize="14sp" />
 
                 </LinearLayout>

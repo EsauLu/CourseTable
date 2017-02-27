@@ -59,6 +59,11 @@ public class Constant {
 	public static  final String LOGIN_FAIL="loginfail";
 
 	/**
+	 * 取数据的key，学年
+	 */
+	public static final String COURSE_XND="coursexnd";
+
+	/**
 	 * 取数据的key，课表
 	 */
 	public static final String COURSE_TABLE="courseTable";

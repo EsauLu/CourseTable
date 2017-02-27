@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 
 import com.fatcat.coursetable.jw.bean.Course;
 import com.fatcat.coursetable.jw.bean.CourseTable;
@@ -113,6 +114,9 @@ public class DataService extends Service implements OkHttpDAO{
 
         public void qureyCourseTable(String xnd, String xqd){
             DataService.this.getCourseTable(xnd,xqd);
+        }
+        public void qureyXnds(){
+            DataService.this.getXndAndXqd();
         }
 
         public void qureyScore(){
@@ -250,6 +254,45 @@ public class DataService extends Service implements OkHttpDAO{
     }
 
     @Override
+    public void getXndAndXqd() {
+
+        String urlStr=mBaseURL+mCourseURL;//查询课表的URL
+        String referer=mBaseURL+Constant.STUDENT_URL +mUser.getName();//引用地址
+        Request.Builder builder=new Request.Builder().url(urlStr).addHeader("Referer",referer);
+        Request request=builder.build();
+        Call call=mOkHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                connectionError();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                String html=response.body().string();
+                mViewState=HtmlTools.findViewState(html);//记录__VIEWSTATE
+                StuSimpleInfo stuInfo=HtmlTools.getCourseStuInfo(html);
+                String[] xnds=HtmlTools.getXnd(html);	//在响应内容中获取学年度选项列表
+                String xnd=HtmlTools.getCurrXnd(html);
+                String xqd=HtmlTools.getCurrXqd(html);
+//                Log.i("获取当前学年","学年："+xnd+" , 学期："+xqd);
+//                Log.i("获取当前学年",html.substring(html.length()/2));
+
+                //通过广播将课表发送到主界面
+                Intent it=new Intent(BroadcastAction.COURSE_XND);
+                Bundle bl=new Bundle();
+                bl.putSerializable(Constant.COURSE_XND,xnds);
+                bl.putString("currXnd",xnd);
+                bl.putString("currXqd",xqd);
+                it.putExtras(bl);
+                sendBroadcast(it);
+            }
+        });
+
+    }
+
+    @Override
     public void getCourseTable(final String xnd,final String xqd) {
         String urlStr=mBaseURL+mCourseURL;//查询课表的URL
         String referer=mBaseURL+Constant.STUDENT_URL +mUser.getName();//引用地址
@@ -280,24 +323,26 @@ public class DataService extends Service implements OkHttpDAO{
                 CourseTable courseTable=new CourseTable();
                 mViewState=HtmlTools.findViewState(html);//记录__VIEWSTATE
                 StuSimpleInfo stuInfo=HtmlTools.getCourseStuInfo(html);
-                String[] xnds=HtmlTools.getXnd(html);	//在响应内容中获取学年度选项列表
-                String[] xqds=HtmlTools.getXqd(html);	//在响应内容中获取学期选项列表
                 ArrayList<Course> courses=HtmlTools.getCourseList(html);	//在响应内容中获取课表
 
                 String _xnd=xnd;
                 String _xqd=xqd;
-
-                //如果传进来的学年度和学期参数为空，则使用默认选项
-                if(_xnd==null&&xnds.length>0) _xnd=xnds[0];
-                if(_xqd==null&&xqds.length>0) _xqd=xqds[0];
+//
+//                //如果传进来的学年度和学期参数为空，则使用默认选项
+//                Log.i(courses.size()+"课表："+_xnd+" , "+_xqd,"\n"+html.substring(html.length()/2));
+                if(_xnd==null||_xnd.equals("")) {
+                    _xnd=HtmlTools.getCurrXnd(html);
+                }
+                if(_xqd==null||_xqd.equals("")) {
+                    _xqd=HtmlTools.getCurrXqd(html);
+                }
 
                 //保存获取到的所有信息
-                courseTable.setXnd(xnds);
-                courseTable.setXqd(xqds);
                 courseTable.setCurrXnd(_xnd);
                 courseTable.setCurrXqd(_xqd);
                 courseTable.setCourses(courses);
                 courseTable.setSimpleInfo(stuInfo);
+//                Log.i("保存课表：",""+_xnd+" , "+_xqd);
 
                 //通过广播将课表发送到主界面
                 Intent it=new Intent(BroadcastAction.COURSE_TABLE);
@@ -431,6 +476,7 @@ public class DataService extends Service implements OkHttpDAO{
      * 请求失败或错误时，发送错误信息广播
      */
     private void connectionError(){
+        Log.i("连接失败！","连接失败！");
         Intent it=new Intent();
         String errorMessege="连接失败！";
         it.setAction(BroadcastAction.LOGIN_FAIL);

@@ -104,43 +104,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="?android:attr/selectableItemBackground"
-                android:orientation="vertical"
-                android:padding="10dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="开发团队"
-                    android:textColor="@color/colorText"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:text="TeamFatCat"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:text="简介：TeamFatCat由三位吉林大学珠海学院计算机科学与技术系的学生组成，主要以学习交流为主。"
-                    android:textSize="14sp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:text="如需联系我们，请发送邮件到:1165050143@qq.com"
-                    android:textSize="14sp" />
-
-            </LinearLayout>
 
         </LinearLayout>
 

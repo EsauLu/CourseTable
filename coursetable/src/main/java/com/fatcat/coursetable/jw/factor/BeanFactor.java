@@ -19,7 +19,7 @@ public class BeanFactor {
 	/**
 	 * 匹配课程开始和结束周的正则表达式
 	 */
-	private static String pattern="(.*)(\\d+)-(\\d+)(.*)";
+	private static String pattern="(.*?)(\\d+)-(\\d+)(.*)";
 	
 	/**
 	 * 匹配课程开始和结束周的Pattern实例
@@ -34,6 +34,7 @@ public class BeanFactor {
 	 * @return 返回课程对象
 	 */
 	public static Course createCourse(String[] info,int x,int y){
+
 		Course c=new Course();		
 		c.setName(info[0]);
 		
@@ -67,14 +68,12 @@ public class BeanFactor {
 				c.setWeekState(Course.ALL_WEEK);
 			}
 		}
-		
-		
+
 		c.setWeekNum(weekNum);//周数
-		
 		c.setTeacher(info[2]);
 		c.setClassRoom(info[3]);
 		c.setSchoolTime(x, y);
-		
+
 		return c;
 	}
 

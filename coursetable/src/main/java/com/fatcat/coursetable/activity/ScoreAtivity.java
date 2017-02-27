@@ -3,6 +3,7 @@ package com.fatcat.coursetable.activity;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.fatcat.coursetable.R;
@@ -58,6 +59,17 @@ public class ScoreAtivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
 
 

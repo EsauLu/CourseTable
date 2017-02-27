@@ -1,5 +1,6 @@
 package com.fatcat.coursetable.jw.tool;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -99,7 +100,7 @@ public class HtmlTools {
 		String res="";
 		String tar=findXndOrXqdHtml(html, x);
 		ArrayList<String> arr=new ArrayList<String>();
-		String pattern="<option([\\s\\S]*?)>(.*?)</option>";		
+		String pattern="<option([\\s\\S]*?)>(.*?)</option>";
 		Pattern p=Pattern.compile(pattern);
 		Matcher m=p.matcher(tar);		
 		while(m.find()){
@@ -122,7 +123,26 @@ public class HtmlTools {
 	 */
 	public static String[] getXnd(String html){			
 		return getOptions(html, FIND_XND);
-	}	
+	}
+
+	/**
+	 * 获取当前学年度选项
+	 * @param html
+	 * @return
+     */
+	public static String getCurrXnd(String html){
+	//<option selected="selected" value="2016-2017">2016-2017</option>
+
+		String res="";
+		String pattern="<option selected=\"selected\" value=\"((\\d\\d+)-(\\d\\d+))\">(.*?)</option>";
+		Pattern p=Pattern.compile(pattern);
+		Matcher m=p.matcher(html);
+		if(m.find()){
+			res=m.group(1);
+		}
+		return res.trim();
+
+	}
 	
 	/**
 	 * 获取学期选项数组
@@ -131,6 +151,25 @@ public class HtmlTools {
 	 */
 	public static String[] getXqd(String html){			
 		return getOptions(html, FIND_XQD);
+	}
+
+	/**
+	 * 获取当前学期
+	 * @param html
+	 * @return
+     */
+	public static String getCurrXqd(String html){
+		//	<option selected="selected" value="1">1</option>
+
+		String res="";
+		String pattern="<option selected=\"selected\" value=\"\\d\">(.*?)</option>";
+		Pattern p=Pattern.compile(pattern);
+		Matcher m=p.matcher(html);
+		if(m.find()){
+			res=m.group(1);
+		}
+		return res.trim();
+
 	}
 	
 	/**
@@ -171,7 +210,7 @@ public class HtmlTools {
 	 * @return 返回课表
 	 */
 	public static ArrayList<Course> getCourseList(String html){
-		
+
 		String courseTableHtml=findCourseTableHtml(html);//找到课表部分的HTML
 		ArrayList<Course> courses=new ArrayList<Course>();
 
@@ -212,7 +251,7 @@ public class HtmlTools {
 			}
 			
 		}
-				
+
 		return courses;
 	}
 

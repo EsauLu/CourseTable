@@ -74,4 +74,5 @@
 
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="title_activity_setting">SettingActivity</string>
+    <string name="title_activity_choose_xnd">ChooseXndActivity</string>
 </resources>

@@ -39,9 +39,10 @@ public interface OkHttpDAO {
     /**
      * 登陆
      * @param user 用户信息
-     * @return 返回登陆是否成功
      */
     public void login(User user);
+
+    public void getXndAndXqd();
 
     /**
      * 根据学年度和学期获取课表
@@ -53,20 +54,16 @@ public interface OkHttpDAO {
 
     /**
      * 获取个人信息
-     * @return 个人信息
      */
     public void getScore();
 
     /**
      * 获取个人信息
-     * @return 个人信息
      */
     public void getPersonalInfo();
 
     /**
      * 设置教务网地址
-     *
-     * @param url 地址
      */
     public void setJwURL(String url);
 

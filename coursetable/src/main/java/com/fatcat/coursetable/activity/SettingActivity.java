@@ -26,6 +26,7 @@ public class SettingActivity extends BaseActivity {
 
     private Toolbar mToolbar;
     private TextView mCurrWeekView;
+    private TextView mCurrXnd;
     private int mCurrWeekNum;
 
     @Override
@@ -37,6 +38,7 @@ public class SettingActivity extends BaseActivity {
     public void initView() {
         setContentView(R.layout.activity_setting);
         mCurrWeekView = (TextView) findViewById(R.id.setting_curr_week_des);
+        mCurrXnd = (TextView) findViewById(R.id.tv_curr_xnd);
         updateCurrWeek();
     }
 
@@ -60,6 +62,16 @@ public class SettingActivity extends BaseActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String xnd=PrefUtils.getCurrXnd(this,null);
+        String xqd=PrefUtils.getCurrXqd(this,null);
+        if(xnd!=null&&xqd!=null){
+            mCurrXnd.setText(xnd+"学年第"+xqd+"学期");
+        }
     }
 
     /**
@@ -113,17 +125,14 @@ public class SettingActivity extends BaseActivity {
 
 
     private void clickMyCourse() {
-        Intent intent = new Intent(SettingActivity.this, CourseLoginActivity.class);
-        intent.putExtra("qurey", "获取课表...");
+        Intent intent = new Intent(SettingActivity.this, ChooseXndActivity.class);
         startActivity(intent);
-        SettingActivity.this.finish();
     }
 
     public void qureyScore(){
         Intent intent = new Intent(SettingActivity.this, CourseLoginActivity.class);
         intent.putExtra("qurey", "获取成绩...");
         startActivity(intent);
-        SettingActivity.this.finish();
     }
 
     private void clickCurrWeekNum() {

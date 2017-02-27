@@ -168,6 +168,15 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
      * 排列课程到课表界面
      */
     private void rankCourse(int weekNum) {
+
+        for(int i=0;i<lessons.length;i++){
+            for(int j=0;j<lessons[i].length;j++){
+                Button btn=(Button) findViewById(lessons[i][j]);
+                btn.setText("");
+                btn.setBackgroundResource(R.drawable.kb0);
+            }
+        }
+
         //记录当前周是单周还是双周
         int currWeekState = (weekNum % 2 == 0) ? Course.DOUBLE_WEEK : Course.SINGLE_WEEK;
         //排列课程信息
@@ -203,8 +212,8 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
 
         }
         //填充颜色
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 7; j++) {
+        for(int i=0;i<lessons.length;i++){
+            for(int j=0;j<lessons[i].length;j++){
                 Button btn = (Button) findViewById(lessons[i][j]);
                 String key = btn.getText() + "*" + (2 * i + 1) + j;
                 Course c = mCourseMap.get(key);//获得该课程的背景颜色
@@ -219,7 +228,7 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
                     }
                 }
                 //该课程当周不上课，则设置背景颜色为灰色
-                btn.setTextColor(Color.GRAY);
+                btn.setTextColor(0x55555555);
                 btn.setBackgroundResource(R.drawable.unavailable);
             }
         }
@@ -246,7 +255,9 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
     private boolean updateCourse(){
         updateCurrWeek();
         //取出保存的课表
-        String courseString = PrefUtils.getCourseInfo(CourseActivity.this, "");
+        String xnd=PrefUtils.getCurrXnd(CourseActivity.this, "");
+        String xqd=PrefUtils.getCurrXqd(CourseActivity.this, "");
+        String courseString = PrefUtils.getCourseInfo(CourseActivity.this, xnd+xqd, "");
         if (courseString == null || courseString.equals("")) {
             return false;
         }
@@ -257,6 +268,7 @@ public class CourseActivity extends BaseActivity implements AdapterView.OnItemSe
         mCourseMap.clear();
         mBgColorMap.clear();
         int k = 0;
+
         for (Course c : mCourseTable.getCourses()) {
             String key = c.getName() + "@" + c.getClassRoom() + "*" + c.getNumber() + (c.getDay() % 7);
             mCourseMap.put(key, c);

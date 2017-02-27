@@ -38,6 +38,7 @@ import com.fatcat.coursetable.uitls.PrefUtils;
 import com.google.gson.Gson;
 
 import java.util.Calendar;
+import java.util.Date;
 
 
 /**
@@ -64,6 +65,9 @@ public class CourseLoginActivity extends BaseActivity {
 
     private MyBroadcastReceiver mReceiver;
 
+    public int courseTableCount=-1;
+    public int xndSum=0;
+
 
     private ServiceConnection sc = new ServiceConnection() {
         @Override
@@ -84,10 +88,11 @@ public class CourseLoginActivity extends BaseActivity {
             super.handleMessage(msg);
             switch (msg.what) {
                 case 0x123: {//登陆成功
+
                     btnCourseLogin.setEnabled(false);
                     btnCourseLogin.setText(doQurey);
                     if (doQurey.equals("获取课表...")) {
-                        myBinder.qureyCourseTable(null, null);
+                        myBinder.qureyXnds();
                     } else if (doQurey.equals("获取成绩...")) {
                         myBinder.qureyScore();
                     }
@@ -111,17 +116,30 @@ public class CourseLoginActivity extends BaseActivity {
                     CourseTable courseTable = (CourseTable) msg.getData().getSerializable(Constant.COURSE_TABLE);
                     Gson gson = new Gson();
 
-                    //保存课表
-                    PrefUtils.setCourseInfo(CourseLoginActivity.this, gson.toJson(courseTable).toString());
-                    //将当前周作为课表开始时间保存
-                    PrefUtils.setBeginTime(CourseLoginActivity.this, DateUtils.countBeginTime(Calendar.getInstance(),1));
+                    if(courseTable.getCurrXqd().equals("3")){
+                        String[] xnds=gson.fromJson(PrefUtils.getXndInfo(CourseLoginActivity.this,""),String[].class);
+                        for(int i=xnds.length-1;i>=0;i--){
+                            myBinder.qureyCourseTable(xnds[i], "2");
+                            myBinder.qureyCourseTable(xnds[i], "1");
+                        }
+                        break;
+                    }
 
-                    Intent intent=new Intent(BroadcastAction.UPDTE_COURSE);
-                    CourseLoginActivity.this.sendBroadcast(intent);
-                    CourseLoginActivity.this.finish();
+                    //保存课表
+                    PrefUtils.setCourseInfo(CourseLoginActivity.this, courseTable.getCurrXnd()+courseTable.getCurrXqd(), gson.toJson(courseTable).toString());
+
+                    courseTableCount++;
+                    btnCourseLogin.setText(doQurey+courseTableCount+"/"+xndSum);
+                    if (courseTableCount==xndSum){
+                        //将当前周作为课表开始时间保存
+                        PrefUtils.setBeginTime(CourseLoginActivity.this, DateUtils.countBeginTime(Calendar.getInstance(),1));
+                        Intent intent=new Intent(BroadcastAction.UPDTE_COURSE);
+                        CourseLoginActivity.this.sendBroadcast(intent);
+                        CourseLoginActivity.this.finish();
+                    }
                     break;
                 }
-                case 0x127: {//获取课表
+                case 0x127: {//获取成绩
                     Bundle bl = msg.getData();
                     Intent intent=new Intent(CourseLoginActivity.this,ScoreAtivity.class);
                     if(bl!=null){
@@ -131,6 +149,37 @@ public class CourseLoginActivity extends BaseActivity {
                     CourseLoginActivity.this.finish();
                     break;
                 }
+                case 0x128: {//获取学年列表
+
+                    Bundle bl=msg.getData();
+
+                    String[] xnds = (String[]) bl.getSerializable(Constant.COURSE_XND);
+                    String xnd=bl.getString("currXnd");
+                    String xqd=bl.getString("currXqd");
+
+                    Calendar cal=Calendar.getInstance();
+                    int m=cal.get(Calendar.MONTH);
+                    if(1<=m&&m<7){
+                        xqd="2";
+                    }else{
+                        xqd="1";
+                    }
+
+                    Gson gson = new Gson();
+
+                    //保存学年列表
+                    PrefUtils.setXndInfo(CourseLoginActivity.this, gson.toJson(xnds).toString());
+                    PrefUtils.setCurrXnd(CourseLoginActivity.this, xnd);
+                    PrefUtils.setCurrXqd(CourseLoginActivity.this, xqd);
+
+                    courseTableCount=0;
+                    xndSum=xnds.length*2;
+                    myBinder.qureyCourseTable(xnds[0], "3");
+                    btnCourseLogin.setText(doQurey+0+"/"+xndSum);
+
+                    break;
+                }
+
             }
         }
     };
@@ -180,6 +229,7 @@ public class CourseLoginActivity extends BaseActivity {
         intentFilter.addAction(BroadcastAction.LOGIN_FAIL);
         intentFilter.addAction(BroadcastAction.CHECK_IMG);
         intentFilter.addAction(BroadcastAction.COURSE_TABLE);
+        intentFilter.addAction(BroadcastAction.COURSE_XND);
         intentFilter.addAction(BroadcastAction.SCORE);
         registerReceiver(mReceiver, intentFilter);
 
@@ -188,6 +238,8 @@ public class CourseLoginActivity extends BaseActivity {
         bindService(it, sc, Context.BIND_AUTO_CREATE);
 
     }
+
+
 
     public void loginClick(View view){
         switch (view.getId()){
@@ -263,7 +315,9 @@ public class CourseLoginActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                if(courseTableCount<0||courseTableCount>=6){
+                    finish();
+                }
                 break;
 
             default:
@@ -275,9 +329,13 @@ public class CourseLoginActivity extends BaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            finish();
+            if(courseTableCount<0||courseTableCount>=6){
+                finish();
+            }else{
+                return true;
+            }
         }
-        return false;
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
@@ -323,6 +381,11 @@ public class CourseLoginActivity extends BaseActivity {
                 case BroadcastAction.SCORE:{
                     //接收成绩表
                     msg.what = 0x127;
+                    break;
+                }
+                case BroadcastAction.COURSE_XND:{
+                    //接收成绩表
+                    msg.what = 0x128;
                     break;
                 }
             }

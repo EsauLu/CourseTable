@@ -3,10 +3,12 @@ package com.fatcat.coursetable.widget;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import com.fatcat.coursetable.R;
+import com.fatcat.coursetable.activity.CourseActivity;
 import com.fatcat.coursetable.jw.bean.Course;
 import com.fatcat.coursetable.jw.bean.CourseTable;
 import com.fatcat.coursetable.uitls.PrefUtils;
@@ -44,7 +46,11 @@ public class CourseRemoteViewService extends RemoteViewsService {
 
             mCourseList.clear();
             CourseTable ct=null;
-            String courseString = PrefUtils.getCourseInfo(mContext, "");
+            String xnd=PrefUtils.getCurrXnd(mContext, "");
+            String xqd=PrefUtils.getCurrXqd(mContext, "");
+            String courseString = PrefUtils.getCourseInfo(mContext, xnd+xqd, "");
+            Log.i("++//获取课表：","+++"+xnd+xqd+"+++");
+            Log.i("++//获取课表：","+++"+courseString+"+++");
             if (courseString != null && !courseString.equals("")) {
                 //获取课表
                 Gson gson = new Gson();
@@ -52,6 +58,7 @@ public class CourseRemoteViewService extends RemoteViewsService {
             }else{
                 return;
             }
+            Log.i("++**获取成功：","+++"+courseString+"+++");
             int weekDay=CourseWidgetProvider.WEEK_DAY;//获取星期几
             int weekNum=CourseWidgetProvider.WEEK_NUM;//获取周数
             int weekState =weekNum%2==0 ? Course.DOUBLE_WEEK : Course.SINGLE_WEEK;
