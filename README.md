@@ -1,9 +1,9 @@
 吉珠课表
 ==========
 
-##代码说明
+## 代码说明
 
-###主要包的作用说明
+### 主要包的作用说明
 * com.fatcat.coursetable.activity<br>
 应用的界面activity所在包
 * com.fatcat.coursetable.widget<br>
